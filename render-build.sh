@@ -29,7 +29,8 @@ apt-get install -y \
     libnss3-tools
 
 # ChromiumDriverのインストール
-apt-get install -y chromium-driver
+apt-get install chromium-driver
+
 
 # ※ 必要であれば、Google Chromeのインストールも行う場合（Chromiumを使うなら不要）
 # CHROMIUM_VERSION=112.0.5615.138-1
