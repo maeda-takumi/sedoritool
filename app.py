@@ -12,7 +12,7 @@ import chromedriver_autoinstaller
 app = Flask(__name__)
 
 def setup_driver():
-    # chromedriver_autoinstaller を使って自動インストール（必要であれば）
+    # 自動でchromedriverをインストール（chromedriver_autoinstallerが利用されます）
     chromedriver_autoinstaller.install()
 
     options = Options()
@@ -21,15 +21,14 @@ def setup_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
 
-    # Chromium のバイナリパスを指定（Render の環境では通常 chromium-browser としてインストールされます）
-    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
+    # Render環境では、Chromium の実行ファイルは /usr/bin/chromium になっている可能性が高いので変更
+    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium")
 
-    # chromedriver のパスを指定（Render の環境では通常 /usr/bin/chromedriver になっています）
+    # ドライバーのパスを指定（環境変数が設定されていなければ、デフォルトは /usr/bin/chromedriver）
     service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
     
     driver = webdriver.Chrome(service=service, options=options)
     return driver
-
 
 @app.route("/", methods=["GET"])
 def home():
@@ -51,7 +50,7 @@ def search():
             EC.presence_of_element_located((By.CLASS_NAME, "sc-55dc813e-2"))
         )
         
-        # 検索ワードを入力
+        # 検索ワードを入力して検索実行
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
 
@@ -65,7 +64,6 @@ def search():
             first_item = items[0]
             item_price = first_item.find_element(By.CLASS_NAME, "number__6b270ca7").text
             item_url = first_item.find_element(By.TAG_NAME, "a").get_attribute("href")
-
             result = {
                 "name": query,
                 "price": item_price,
