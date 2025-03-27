@@ -7,13 +7,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import chromedriver_autoinstaller
-
-import sys
-print(sys.path)
-
-# chromedriverの自動インストール
-chromedriver_autoinstaller.install()
 
 app = Flask(__name__)
 
@@ -22,13 +15,15 @@ def setup_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--headless")  # Render環境では必須
+    options.add_argument("--disable-gpu")  # Render環境ではGPUを無効化
 
-    # Chromium のパスを指定（Render環境用）
-    options.binary_location = "/usr/bin/chromium-browser"
+    # Chromiumのバイナリパスを指定
+    options.binary_location = "/usr/bin/chromium"
 
-    # chromedriverのパスを自動で指定
-    driver = webdriver.Chrome(options=options)
+    # chromedriverを明示的に指定
+    driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver", options=options)
     return driver
+
 
 @app.route("/search", methods=["GET"])
 def search():
