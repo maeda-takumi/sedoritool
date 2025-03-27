@@ -26,10 +26,10 @@ apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # 最新のGeckodriverのバージョンを取得
-# GECKODRIVER_VERSION=$(curl -sS https://github.com/mozilla/geckodriver/releases/latest | sed 's/.*\///')
+GECKODRIVER_VERSION=$(curl -sS https://github.com/mozilla/geckodriver/releases/latest | sed 's/.*\///')
 
 # GeckodriverのURLを構築
-GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux-aarch64.tar.gz"
+GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz"
 
 # Geckodriverをダウンロード
 echo "Downloading Geckodriver version $GECKODRIVER_VERSION..."
@@ -44,13 +44,17 @@ fi
 # ダウンロードしたファイルの形式を確認
 FILE_TYPE=$(file -b /tmp/geckodriver.tar.gz)
 if [[ "$FILE_TYPE" != "gzip compressed data"* ]]; then
-  echo "Downloaded file is not in gzip format. Exiting..."
+  echo "Downloaded file is not in gzip format. File Type: $FILE_TYPE. Exiting..."
   exit 1
 fi
 
-# Geckodriverを解凍してインストール
+# Geckodriverを解凍してインストール（/usr/local/binではなく/tmpにインストール）
 echo "Extracting Geckodriver..."
-tar -xvzf /tmp/geckodriver.tar.gz -C /usr/local/bin/
+tar -xvzf /tmp/geckodriver.tar.gz -C /tmp/
+
+# Geckodriverを適切なパスに移動（例: /usr/binに移動）
+echo "Moving Geckodriver to /usr/bin..."
+mv /tmp/geckodriver /usr/bin/
 
 # インストール後のクリーンアップ
 rm /tmp/geckodriver.tar.gz
