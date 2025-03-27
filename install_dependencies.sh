@@ -9,3 +9,6 @@ apt-get install -y libgtk-4-1 libgraphene-1.0-0 libgstgl-1.0-0 libgstcodecparser
 # Playwrightをインストール
 pip install playwright
 playwright install
+
+# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
+pip install -r requirements.txt
