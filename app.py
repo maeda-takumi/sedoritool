@@ -20,8 +20,10 @@ def setup_driver():
     # Chromiumのバイナリパスを指定
     options.binary_location = "/usr/bin/chromium"
 
-    # chromedriverを明示的に指定
-    driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver", options=options)
+    # chromedriverのパスを指定
+    service = Service(executable_path="/usr/bin/chromedriver")
+    
+    driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 
