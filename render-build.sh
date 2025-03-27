@@ -28,3 +28,5 @@ apt-get install -y \
 CHROMIUM_VERSION=112.0.5615.138-1
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -f
+
+pip install -r requirements.txt
