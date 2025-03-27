@@ -7,24 +7,22 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import chromedriver_autoinstaller
 
 app = Flask(__name__)
 
 def setup_driver():
-    # 自動でchromedriverをインストール（chromedriver_autoinstallerが利用されます）
-    chromedriver_autoinstaller.install()
-
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
 
-    # Render環境では、Chromium の実行ファイルは /usr/bin/chromium になっている可能性が高いので変更
-    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium")
+    # Render環境でインストールされたChromiumのパスを指定
+    # Render の環境では通常、Chromium は /usr/bin/chromium-browser か /usr/bin/chromium にインストールされているので、
+    # 正しいパスを確認してください。ここでは /usr/bin/chromium-browser を例にします。
+    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
 
-    # ドライバーのパスを指定（環境変数が設定されていなければ、デフォルトは /usr/bin/chromedriver）
+    # ドライバーのパスを指定（Render の環境では通常 /usr/bin/chromedriver になっているはずです）
     service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
     
     driver = webdriver.Chrome(service=service, options=options)
@@ -50,7 +48,7 @@ def search():
             EC.presence_of_element_located((By.CLASS_NAME, "sc-55dc813e-2"))
         )
         
-        # 検索ワードを入力して検索実行
+        # 検索ワードを入力
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
 
@@ -74,7 +72,6 @@ def search():
 
     except Exception as e:
         result = {"error": str(e)}
-
     finally:
         driver.quit()
 
