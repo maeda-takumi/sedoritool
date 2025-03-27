@@ -19,7 +19,7 @@ def setup_driver():
     options.add_argument("--disable-gpu")
 
     # Geckodriverのパスを指定（PlaywrightではなくGeckodriverを使用）
-    geckodriver_path = "/usr/local/bin/geckodriver"  # Geckodriverのインストールパスに合わせてください
+    geckodriver_path = "/tmp/geckodriver"  # Geckodriverのインストールパスに合わせてください
 
     # セットアップ
     service = Service(executable_path=geckodriver_path)
