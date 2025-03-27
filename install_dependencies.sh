@@ -1,4 +1,5 @@
 #!/bin/bash
+apt-get update && apt-get install -y firefox-esr
 
 # 必要な依存関係をインストール
 apt-get update && apt-get install -y \
