@@ -1,13 +1,12 @@
 #!/bin/bash
-sudo apt-get update
-sudo apt-get install chromium-browser
 
-# Update apt-get and install dependencies
+# パッケージリストを更新して、必要なツールをインストール
 apt-get update -y
 apt-get install -y wget curl unzip
 
-# Install Chromium dependencies
+# Chromiumおよび依存ライブラリのインストール
 apt-get install -y \
+    chromium-browser \
     fonts-liberation \
     libappindicator3-1 \
     libasound2 \
@@ -26,9 +25,13 @@ apt-get install -y \
     libu2f-udev \
     libnss3-tools
 
-# Install Chromium
-CHROMIUM_VERSION=112.0.5615.138-1
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -f
+# ChromiumDriverのインストール
+apt-get install -y chromium-driver
 
+# ※ 必要であれば、Google Chromeのインストールも行う場合（Chromiumを使うなら不要）
+# CHROMIUM_VERSION=112.0.5615.138-1
+# wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -f
+
+# Pythonパッケージのインストール
 pip install -r requirements.txt
