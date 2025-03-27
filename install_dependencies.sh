@@ -1,4 +1,6 @@
 #!/bin/bash
+# キャッシュをクリア
+apt-get clean
 
 # パッケージリストを更新し、Firefox ESRをインストール
 echo "Updating package list and installing Firefox ESR..."
