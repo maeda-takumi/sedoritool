@@ -8,6 +8,7 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 app = Flask(__name__)
 
@@ -20,14 +21,14 @@ def setup_driver():
     
     # Firefoxのパスを明示的に指定
     binary = FirefoxBinary('/tmp/firefox-esr/firefox')  # Firefox ESRのインストール場所を指定
-    options = Options()
+    options = webdriver.FirefoxOptions()
     options.binary = binary
     
     # Geckodriverのパスを指定
     geckodriver_path  = "/tmp/geckodriver"
     service = Service(geckodriver_path)
 
-    driver = webdriver.Firefox(service=service, options=options)
+    driver = webdriver.Firefox(firefox_binary=binary, options=options)
 
     return driver
 
