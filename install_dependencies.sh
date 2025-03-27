@@ -1,15 +1,48 @@
 #!/bin/bash
-# キャッシュをクリア
-apt-get clean
 
-# パッケージリストを更新し、Firefox ESRをインストール
-echo "Updating package list and installing Firefox ESR..."
-apt-get update && apt-get install -y firefox-esr
+# Firefox ESRのダウンロードURL（最新バージョンのURLを指定）
+FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/102.9.0esr/linux-x86_64/en-US/firefox-102.9.0esr.tar.bz2"
+FIREFOX_ESR_DOWNLOAD_DIR="/tmp/firefox-esr"
+FIREFOX_ESR_PATH="$FIREFOX_ESR_DOWNLOAD_DIR/firefox"
+
+# Firefox ESRがすでにインストールされているかチェック
+if [ ! -d "$FIREFOX_ESR_PATH" ]; then
+  # Firefox ESRをダウンロード
+  echo "Downloading Firefox ESR from $FIREFOX_ESR_URL..."
+  curl -L "$FIREFOX_ESR_URL" -o /tmp/firefox-esr.tar.bz2
+
+  # ダウンロードが成功したか確認
+  if [ $? -ne 0 ]; then
+    echo "Error downloading Firefox ESR. Exiting..."
+    exit 1
+  fi
+
+  # ダウンロードしたファイルの形式を確認
+  FILE_TYPE=$(file -b /tmp/firefox-esr.tar.bz2)
+  if [[ "$FILE_TYPE" != "bzip2 compressed data"* ]]; then
+    echo "Downloaded file is not in bzip2 format. File Type: $FILE_TYPE. Exiting..."
+    exit 1
+  fi
+
+  # ダウンロードしたファイルを解凍
+  echo "Extracting Firefox ESR..."
+  mkdir -p "$FIREFOX_ESR_DOWNLOAD_DIR"
+  tar -xvjf /tmp/firefox-esr.tar.bz2 -C "$FIREFOX_ESR_DOWNLOAD_DIR"
+
+  # 解凍後にFirefox ESRが正しくインストールされたか確認
+  if [ ! -d "$FIREFOX_ESR_PATH" ]; then
+    echo "Failed to extract Firefox ESR. Exiting..."
+    exit 1
+  fi
+
+  echo "Firefox ESR installed at $FIREFOX_ESR_PATH"
+else
+  echo "Firefox ESR is already installed at $FIREFOX_ESR_PATH"
+fi
 
 # 必要な依存関係をインストール
 echo "Installing necessary dependencies..."
 apt-get update && apt-get install -y \
-  firefox-esr \
   wget \
   curl \
   ca-certificates \
@@ -20,7 +53,6 @@ apt-get update && apt-get install -y \
   libxcomposite1 \
   libxrandr2 \
   libxi6 \
-  libgdk-pixbuf2.0-0 \
   libnss3 \
   libnss3-dev \
   libatk-bridge2.0-0 \
@@ -32,15 +64,12 @@ apt-get update && apt-get install -y \
   libenchant-2-2 \
   && rm -rf /var/lib/apt/lists/*
 
-# 最新のGeckodriverのバージョンを取得
-# GECKODRIVER_VERSION=$(curl -sS https://github.com/mozilla/geckodriver/releases/latest | sed 's/.*\///')
-
 # GeckodriverのURLを構築
 GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz"
 
 # Geckodriverをダウンロード
-echo "Downloading Geckodriver version $GECKODRIVER_VERSION..."
-curl -L $GECKODRIVER_URL -o /tmp/geckodriver.tar.gz
+echo "Downloading Geckodriver..."
+curl -L "$GECKODRIVER_URL" -o /tmp/geckodriver.tar.gz
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
@@ -55,7 +84,7 @@ if [[ "$FILE_TYPE" != "gzip compressed data"* ]]; then
   exit 1
 fi
 
-# Geckodriverを解凍してインストール（/tmpに解凍）
+# Geckodriverを解凍してインストール
 echo "Extracting Geckodriver..."
 tar -xvzf /tmp/geckodriver.tar.gz -C /tmp/
 
@@ -79,7 +108,7 @@ else
   echo "Geckodriver installed at: $(which geckodriver)"
 fi
 
-# Firefoxのインストール先を確認
+# Firefox ESRのインストール先を確認
 echo "Firefox ESR installed at: $(which firefox)"
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
