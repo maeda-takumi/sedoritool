@@ -4,6 +4,9 @@
 apt-get update -y
 apt-get install -y wget curl unzip
 
+apt-get update
+apt-get install chromium-browser
+
 # Chromiumおよび依存ライブラリのインストール
 apt-get install -y \
     chromium-browser \
