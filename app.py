@@ -11,21 +11,17 @@ from selenium.webdriver.support import expected_conditions as EC
 app = Flask(__name__)
 
 def setup_driver():
-     chromedriver_autoinstaller.install()
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--headless")  # Render環境では必須
-    options.add_argument("--disable-gpu")  # Render環境ではGPUを無効化
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
 
-    # Chromiumのバイナリパスを指定
-    options.binary_location = "/usr/bin/chromium"
+    # 環境変数からchromiumのパスを取得
+    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium")
 
-    # chromedriverのパスを指定
-    #service = Service("/usr/bin/chromedriver")  # chromedriverのパス
-    # ドライバーのパスを指定（chromedriver-autoinstallerで自動インストールされたchromedriverのパスを使用）
-    service = Service(executable_path=chromedriver_autoinstaller.install())
-    driver = webdriver.Chrome(service=service, options=options)
+    # Chromiumを直接使用するので、chromedriverは必要ありません
+    driver = webdriver.Chrome(options=options)
     return driver
 
 
