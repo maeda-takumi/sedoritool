@@ -17,18 +17,19 @@ def setup_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
 
-    # 環境変数からchromiumのパスを取得
+    # 環境変数からchromiumのパスを取得、デフォルトは /usr/bin/chromium-browser
     options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
 
+    # ドライバーのパスを指定、デフォルトは /usr/bin/chromium-driver
+    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromium-driver"))
     
-    # Chromiumを直接使用するので、chromedriverは必要ありません
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Welcome to the Mercari search tool!"  # ホームページを返すなど
+    return "Welcome to the Mercari search tool!"
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -56,7 +57,6 @@ def search():
         )
         items = driver.find_elements(By.CLASS_NAME, "sc-bcd1c877-2")
 
-        # 最初の商品情報を取得
         if items:
             first_item = items[0]
             item_price = first_item.find_element(By.CLASS_NAME, "number__6b270ca7").text
@@ -79,6 +79,5 @@ def search():
     return jsonify(result)
 
 if __name__ == "__main__":
-    # Render の環境変数 PORT を取得 (デフォルト: 5000)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
