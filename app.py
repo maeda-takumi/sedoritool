@@ -27,9 +27,13 @@ def setup_driver():
     return driver
 
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Welcome to the Mercari search tool!"  # ホームページを返すなど
+
 @app.route("/search", methods=["GET"])
 def search():
-    query = request.args.get("query")
+    query = request.args.get("keyword")
     if not query:
         return jsonify({"error": "検索ワードを指定してください"}), 400
 
