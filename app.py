@@ -17,12 +17,13 @@ def setup_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
-
-    # Geckodriverのパスを指定（PlaywrightではなくGeckodriverを使用）
-    geckodriver_path = "/tmp/geckodriver"  # Geckodriverのインストールパスに合わせてください
-
-    # セットアップ
-    service = Service(executable_path=geckodriver_path)
+    
+    # Firefoxのパスを明示的に指定
+    options.binary_location = "/usr/bin/firefox"
+    
+    # Geckodriverのパスを指定
+    geckodriver_path = "/tmp/geckodriver"
+    service = Service(geckodriver_path)
 
     driver = webdriver.Firefox(service=service, options=options)
     return driver
@@ -44,7 +45,7 @@ def search():
 
         # 検索ボックスが表示されるまで待機
         search_box = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "sc-55dc813e-2"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='search']"))
         )
         
         # 検索ワードを入力
