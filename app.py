@@ -18,8 +18,9 @@ def setup_driver():
     options.add_argument("--disable-gpu")
 
     # 環境変数からchromiumのパスを取得
-    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium")
+    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
 
+    
     # Chromiumを直接使用するので、chromedriverは必要ありません
     driver = webdriver.Chrome(options=options)
     return driver
