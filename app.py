@@ -19,13 +19,16 @@ def setup_driver():
     options.add_argument("--disable-gpu")
     
     # Firefoxのパスを明示的に指定
-    options.binary_location = "/tmp/firefox"
+    binary = FirefoxBinary('/tmp/firefox-esr/firefox')  # Firefox ESRのインストール場所を指定
+    options = Options()
+    options.binary = binary
     
     # Geckodriverのパスを指定
-    geckodriver_path = "/tmp/geckodriver"
+    geckodriver_path  = "/tmp/geckodriver"
     service = Service(geckodriver_path)
 
     driver = webdriver.Firefox(service=service, options=options)
+
     return driver
 
 @app.route("/", methods=["GET"])
