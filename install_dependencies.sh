@@ -48,13 +48,17 @@ if [[ "$FILE_TYPE" != "gzip compressed data"* ]]; then
   exit 1
 fi
 
-# Geckodriverを解凍してインストール（/usr/local/binではなく/tmpにインストール）
+# Geckodriverを解凍してインストール（/tmpに解凍）
 echo "Extracting Geckodriver..."
 tar -xvzf /tmp/geckodriver.tar.gz -C /tmp/
 
-# Geckodriverを適切なパスに移動（例: /usr/binに移動）
-echo "Moving Geckodriver to /usr/bin..."
-mv /tmp/geckodriver /usr/bin/
+# Geckodriverを適切なパスに移動（例: /tmpに移動し、PATHを設定）
+echo "Moving Geckodriver to /tmp..."
+mv /tmp/geckodriver /tmp/
+
+# Geckodriverのパスを環境変数PATHに追加
+echo "Adding /tmp to PATH..."
+export PATH=$PATH:/tmp
 
 # インストール後のクリーンアップ
 rm /tmp/geckodriver.tar.gz
