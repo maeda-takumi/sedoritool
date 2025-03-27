@@ -19,7 +19,7 @@ def setup_driver():
     options.add_argument("--disable-gpu")
     
     # Firefoxのパスを明示的に指定
-    options.binary_location = "/usr/bin/firefox"
+    options.binary_location = "/tmp/firefox"
     
     # Geckodriverのパスを指定
     geckodriver_path = "/tmp/geckodriver"
