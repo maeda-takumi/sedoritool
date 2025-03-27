@@ -25,7 +25,7 @@ apt-get update && apt-get install -y \
   libenchant-2-2 \
   && rm -rf /var/lib/apt/lists/*
 
-# Geckodriverのインストール
+# Geckodriverの最新バージョンを取得
 GECKODRIVER_VERSION=$(curl -sS https://github.com/mozilla/geckodriver/releases/latest | sed 's/.*\///')
 wget https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz -O /tmp/geckodriver.tar.gz
 tar -xvzf /tmp/geckodriver.tar.gz -C /usr/local/bin/
