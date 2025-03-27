@@ -1,4 +1,4 @@
 flask==2.0.2
 werkzeug==2.0.3
 chromedriver-autoinstaller
-selenium==4.1.0
+selenium
