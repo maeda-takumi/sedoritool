@@ -1,55 +1,7 @@
 import os
-import subprocess
-from flask import Flask, request, jsonify
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from flask import Flask, jsonify
 
 app = Flask(__name__)
-
-# PlaywrightのインストールされたChromiumのバージョンを取得
-def get_playwright_chromium_version():
-    result = subprocess.run(
-        ["python3", "-m", "playwright", "install", "--with-deps"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
-    # バージョン番号を取得するため、インストールされたパスの一部を抽出
-    version_line = [line for line in result.stdout.splitlines() if "chromium" in line.lower()]
-    if version_line:
-        version = version_line[0].split(" ")[1]  # 例: "chromium-116.0.5845.96"
-        return version
-    else:
-        raise Exception("Chromium version not found!")
-
-def setup_driver():
-    options = Options()
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-
-    # Playwrightインストール後のChromiumのバージョンを取得
-    chromium_version = get_playwright_chromium_version()
-
-    # Playwrightインストール後のChromiumのパスを設定
-    chromium_path = f"/root/.cache/ms-playwright/chromium-{chromium_version}/chrome-linux/chrome"
-    chromedriver_path = f"/root/.cache/ms-playwright/chromium-{chromium_version}/chromedriver"
-    
-    # セットアップ
-    options = webdriver.ChromeOptions()
-    options.binary_location = os.getenv("CHROMIUM_PATH", chromium_path)
-    
-    # ドライバーのサービス
-    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", chromedriver_path))
-
-    driver = webdriver.Chrome(service=service, options=options)
-    return driver
 
 @app.route("/", methods=["GET"])
 def home():
@@ -57,49 +9,11 @@ def home():
 
 @app.route("/search", methods=["GET"])
 def search():
-    query = request.args.get("keyword")
-    if not query:
-        return jsonify({"error": "検索ワードを指定してください"}), 400
-
-    driver = setup_driver()
-
-    try:
-        driver.get("https://jp.mercari.com/")
-
-        # 検索ボックスが表示されるまで待機
-        search_box = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "sc-55dc813e-2"))
-        )
-        
-        # 検索ワードを入力
-        search_box.send_keys(query)
-        search_box.send_keys(Keys.RETURN)
-
-        # 検索結果が表示されるまで待機
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "sc-bcd1c877-2"))
-        )
-        items = driver.find_elements(By.CLASS_NAME, "sc-bcd1c877-2")
-
-        if items:
-            first_item = items[0]
-            item_price = first_item.find_element(By.CLASS_NAME, "number__6b270ca7").text
-            item_url = first_item.find_element(By.TAG_NAME, "a").get_attribute("href")
-            result = {
-                "name": query,
-                "price": item_price,
-                "url": item_url
-            }
-        else:
-            result = {"name": "取得できませんでした", "price": "取得できませんでした", "url": "取得できませんでした"}
-
-    except Exception as e:
-        result = {"error": str(e)}
-    finally:
-        driver.quit()
-
+    # デプロイ用のダミー応答を返す
+    result = {"message": "Mercari search is not active during deployment"}
     return jsonify(result)
 
 if __name__ == "__main__":
+    # 開発時にデバッグモードを無効にして、デプロイ用に修正
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)  # debug=False にしてデバッグモードを無効化
