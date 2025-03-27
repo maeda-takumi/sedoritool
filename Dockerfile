@@ -8,7 +8,7 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 # setup.shを実行
-RUN bash setup.sh
+RUN bash render-build.sh
 
 # アプリケーションを起動
 CMD ["python", "app.py"]
