@@ -18,7 +18,7 @@ def setup_driver():
     options.add_argument("--disable-gpu")
 
     # Chromiumのパス（Render環境では通常 /usr/bin/chromium-browser）
-    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
+    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/local/bin/chromium-browser")
     # ドライバーのパス（通常 /usr/bin/chromium-driver）
     service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromium-driver"))
     
