@@ -1,25 +1,30 @@
 #!/bin/bash
 
-# 必要なライブラリをインストール (Chromiumに必要なライブラリ)
-apt-get update
+# Update apt-get and install dependencies
+apt-get update -y
+apt-get install -y wget curl unzip
+
+# Install Chromium dependencies
 apt-get install -y \
-    chromium \
-    chromium-driver \
-    libxss1 \
-    libappindicator3-1 \
-    libgdk-pixbuf2.0-0 \
-    libnss3 \
-    libasound2 \
     fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
     libcups2 \
-    libx11-xcb1 \
+    libdbus-1-3 \
+    libgdk-pixbuf2.0-0 \
     libnspr4 \
-    libnss3-dev \
+    libnss3 \
+    libx11-xcb1 \
     libxcomposite1 \
+    libxdamage1 \
     libxrandr2 \
     xdg-utils \
-    libgtk-3-0
+    libu2f-udev \
+    libnss3-tools
 
-# 他のインストール処理が必要なら追加
+# Install Chromium
+CHROMIUM_VERSION=112.0.5615.138-1
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -f
