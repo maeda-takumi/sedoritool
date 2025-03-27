@@ -31,5 +31,11 @@ wget https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERS
 tar -xvzf /tmp/geckodriver.tar.gz -C /usr/local/bin/
 rm /tmp/geckodriver.tar.gz
 
+# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
+pip install -r requirements.txt
+
 # Flaskアプリを起動
 python3 app.py
+
+
+
