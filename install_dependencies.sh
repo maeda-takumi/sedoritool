@@ -41,6 +41,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# ダウンロードしたファイルの形式を確認
+FILE_TYPE=$(file -b /tmp/geckodriver.tar.gz)
+if [[ "$FILE_TYPE" != "gzip compressed data"* ]]; then
+  echo "Downloaded file is not in gzip format. Exiting..."
+  exit 1
+fi
+
 # Geckodriverを解凍してインストール
 echo "Extracting Geckodriver..."
 tar -xvzf /tmp/geckodriver.tar.gz -C /usr/local/bin/
