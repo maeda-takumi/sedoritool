@@ -9,6 +9,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import chromedriver_autoinstaller
 
+import sys
+print(sys.path)
+
+import chromedriver_autoinstaller
+chromedriver_autoinstaller.install()
+
 app = Flask(__name__)
 
 def setup_driver():
