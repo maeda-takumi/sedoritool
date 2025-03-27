@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import chromedriver_autoinstaller  # 自動でChromeDriverをインストール
+import chromedriver_autoinstaller
 
 app = Flask(__name__)
 
@@ -76,4 +76,6 @@ def search():
     return jsonify(result)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Render の環境変数 PORT を取得 (デフォルト: 5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
