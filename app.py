@@ -12,7 +12,7 @@ import chromedriver_autoinstaller
 import sys
 print(sys.path)
 
-import chromedriver_autoinstaller
+# chromedriverの自動インストール
 chromedriver_autoinstaller.install()
 
 app = Flask(__name__)
@@ -23,14 +23,12 @@ def setup_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--headless")  # Render環境では必須
 
-    # Render環境用のChromeパス指定
-    options.binary_location = "/usr/bin/google-chrome-stable"
+    # Chromium のパスを指定（Render環境用）
+    options.binary_location = "/usr/bin/chromium-browser"
 
-    # chromedriverを明示的に指定
-    driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver", options=options)
+    # chromedriverのパスを自動で指定
+    driver = webdriver.Chrome(options=options)
     return driver
-
-
 
 @app.route("/search", methods=["GET"])
 def search():
