@@ -1,6 +1,8 @@
 import os
 from flask import Flask, request, jsonify
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,15 +17,12 @@ def setup_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
 
-    # Chromiumの場合
+    # Chromiumのパス（Render環境では通常 /usr/bin/chromium-browser）
     options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/bin/chromium-browser")
 
-    # ChromeDriverの場合（Google Chromeを使用する場合）
-    # options.binary_location = os.getenv("CHROME_PATH", "/usr/bin/google-chrome-stable")
-
-    # ドライバーのパスを指定
-    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
-
+    # ドライバーのパス（通常 /usr/bin/chromium-driver）
+    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromium-driver"))
+    
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
