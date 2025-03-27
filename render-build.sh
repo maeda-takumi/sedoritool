@@ -1,4 +1,6 @@
 #!/bin/bash
+sudo apt-get update
+sudo apt-get install chromium-browser
 
 # Update apt-get and install dependencies
 apt-get update -y
