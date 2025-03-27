@@ -1,4 +1,5 @@
 import os
+import subprocess
 from flask import Flask, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,6 +11,22 @@ from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
+# PlaywrightのインストールされたChromiumのバージョンを取得
+def get_playwright_chromium_version():
+    result = subprocess.run(
+        ["python3", "-m", "playwright", "install", "--with-deps"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+    # バージョン番号を取得するため、インストールされたパスの一部を抽出
+    version_line = [line for line in result.stdout.splitlines() if "chromium" in line.lower()]
+    if version_line:
+        version = version_line[0].split(" ")[1]  # 例: "chromium-116.0.5845.96"
+        return version
+    else:
+        raise Exception("Chromium version not found!")
+
 def setup_driver():
     options = Options()
     options.add_argument("--no-sandbox")
@@ -17,11 +34,20 @@ def setup_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
 
-    # Chromiumのパス（Render環境では通常 /usr/bin/chromium-browser）
-    options.binary_location = os.getenv("CHROMIUM_PATH", "/usr/local/bin/chromium-browser")
-    # ドライバーのパス（通常 /usr/bin/chromium-driver）
-    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromium-driver"))
+    # Playwrightインストール後のChromiumのバージョンを取得
+    chromium_version = get_playwright_chromium_version()
+
+    # Playwrightインストール後のChromiumのパスを設定
+    chromium_path = f"/root/.cache/ms-playwright/chromium-{chromium_version}/chrome-linux/chrome"
+    chromedriver_path = f"/root/.cache/ms-playwright/chromium-{chromium_version}/chromedriver"
     
+    # セットアップ
+    options = webdriver.ChromeOptions()
+    options.binary_location = os.getenv("CHROMIUM_PATH", chromium_path)
+    
+    # ドライバーのサービス
+    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", chromedriver_path))
+
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
