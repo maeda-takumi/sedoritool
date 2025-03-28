@@ -2,7 +2,6 @@ import os
 import urllib.request
 import zipfile
 from flask import Flask, jsonify
-import traceback
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
@@ -39,9 +38,19 @@ def install_chrome():
             zip_ref.extractall(chromedriver_extract_dir)
         print("ChromeDriverが解凍されました。")
 
-        # ダウンロードしたZIPファイルの中身をリスト表示
+        # 解凍したディレクトリ内のファイルリストを取得
         chrome_files = os.listdir(chrome_extract_dir)
         chromedriver_files = os.listdir(chromedriver_extract_dir)
+
+        # 各ファイルの中身をリスト表示するためにファイルリストをさらに取得
+        chrome_file_details = {}
+        chromedriver_file_details = {}
+
+        for file in chrome_files:
+            chrome_file_details[file] = os.listdir(os.path.join(chrome_extract_dir, file)) if os.path.isdir(os.path.join(chrome_extract_dir, file)) else "ファイル"
+        
+        for file in chromedriver_files:
+            chromedriver_file_details[file] = os.listdir(os.path.join(chromedriver_extract_dir, file)) if os.path.isdir(os.path.join(chromedriver_extract_dir, file)) else "ファイル"
 
         # 不要なzipファイルを削除
         os.remove(chrome_zip_path)
@@ -49,8 +58,8 @@ def install_chrome():
 
         # 返すJSONの内容
         return jsonify({
-            "chrome_contents": chrome_files,
-            "chromedriver_contents": chromedriver_files,
+            "chrome_contents": chrome_file_details,
+            "chromedriver_contents": chromedriver_file_details,
             "message": "ChromeとChromeDriverのZIPファイルの中身を展開しました。"
         })
     
