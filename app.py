@@ -23,7 +23,7 @@ def setup_driver():
     chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
     if not os.path.exists(chromedriver_path):
         raise FileNotFoundError(f"ChromeDriverが見つかりません: {chromedriver_path}")
-    service = Service(chromedriver_path)
+    service = Service(executable_path=chromedriver_path, log_path="/tmp/chromedriver.log")
 
     # WebDriverのインスタンスを作成
     driver = webdriver.Chrome(service=service, options=options)  # 新しい方法で driver を作成
