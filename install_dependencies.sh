@@ -27,7 +27,7 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libenchant-2-2 \
   && rm -rf /var/lib/apt/lists/*
 
-# 手動でChromiumをダウンロードする部分を追加
+# Chromiumを手動でインストールする
 CHROMIUM_URL="https://download-chromium.appspot.com/dl/ubuntu?type=deb"
 CHROMIUM_DOWNLOAD_DIR="/tmp/chromium"
 CHROMIUM_DEB_FILE="$CHROMIUM_DOWNLOAD_DIR/chromium.deb"
@@ -45,10 +45,10 @@ fi
 
 # ダウンロードした.debファイルをインストール
 echo "Installing Chromium..."
-sudo dpkg -i "$CHROMIUM_DEB_FILE"
+dpkg -i "$CHROMIUM_DEB_FILE"
 
-# 依存関係の解決
-sudo apt-get install -f
+# 依存関係の解決（sudoなし）
+apt-get install -f
 
 # Chromiumのインストール確認
 if ! command -v chromium-browser &> /dev/null; then
@@ -87,32 +87,4 @@ unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 echo "Granting execute permissions to ChromeDriver..."
 chmod +x "$CHROMEDRIVER_PATH"
 
-# ChromeDriverのパスを環境変数PATHに追加
-echo "Adding /tmp to PATH..."
-export PATH=$PATH:/tmp
-
-# インストール後のクリーンアップ
-rm /tmp/chromedriver.zip
-
-# ChromeDriverのインストールが成功したか確認
-if ! command -v chromedriver &> /dev/null; then
-  echo "ChromeDriver installation failed. Exiting..."
-  exit 1
-else
-  echo "ChromeDriver installed successfully."
-  echo "ChromeDriver installed at: $(which chromedriver)"
-fi
-
-# Chromiumのインストール先を確認
-echo "Chromium installed at: $(which chromium-browser)"
-
-# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
-echo "Installing Python dependencies from requirements.txt..."
-pip install -r requirements.txt
-
-# Pythonのインストール先を確認
-echo "Python installed at: $(which python)"
-echo "Pip installed at: $(which pip)"
-
-# インストールが完了したことを確認
-echo "Installation complete!"
+# ChromeDriverのパスを環境変数PATHに
