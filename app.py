@@ -11,18 +11,28 @@ from selenium.webdriver.support import expected_conditions as EC
 app = Flask(__name__)
 
 def setup_driver():
+    # Chromeの実行ファイルのパス
+    chrome_binary_path = "/tmp/chrome/chrome-linux64/chrome"
+    
+    # 実行ファイルが存在するか確認
+    if not os.path.exists(chrome_binary_path):
+        raise FileNotFoundError(f"Chrome実行ファイルが見つかりません: {chrome_binary_path}")
+    
     # ChromeOptionsの設定
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.binary_location = "/tmp/chrome/chrome-linux64/chrome"
-    
+    options.binary_location = chrome_binary_path
+
     # ChromeDriverのパスを指定（ログのパスを使用）
     chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
+    
+    # ChromeDriverが存在するか確認
     if not os.path.exists(chromedriver_path):
         raise FileNotFoundError(f"ChromeDriverが見つかりません: {chromedriver_path}")
+    
     service = Service(executable_path=chromedriver_path, log_path="/tmp/chromedriver.log")
 
     # WebDriverのインスタンスを作成
