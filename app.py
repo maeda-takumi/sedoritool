@@ -5,11 +5,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-# 最大アップロードサイズを200MBに設定
-app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
-
-
-# ダウンロード先のディレクトリ
+# ダウンロードと解凍先のディレクトリ
 tmp_dir = "/tmp"
 chrome_url = "https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
 chromedriver_url = "https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
@@ -27,33 +23,36 @@ def install_chrome():
         urllib.request.urlretrieve(chromedriver_url, chromedriver_zip_path)
         print("ChromeDriverがダウンロードされました。")
 
-        # ZIPファイルの中身を確認する関数
-        def get_zip_contents(zip_path):
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                return zip_ref.namelist()
+        # 解凍先ディレクトリ
+        chrome_extract_dir = os.path.join(tmp_dir, "chrome-linux64")
+        chromedriver_extract_dir = os.path.join(tmp_dir, "chromedriver-linux64")
 
-        # ChromeのZIP内容確認
-        chrome_contents = get_zip_contents(chrome_zip_path)
-        # ChromeDriverのZIP内容確認
-        chromedriver_contents = get_zip_contents(chromedriver_zip_path)
+        # Chromeの解凍
+        with zipfile.ZipFile(chrome_zip_path, 'r') as zip_ref:
+            zip_ref.extractall(chrome_extract_dir)
+        print("Chromeが解凍されました。")
 
-        # 中身を表示する
-        print(f"Chrome ZIPの中身: {chrome_contents}")
-        print(f"ChromeDriver ZIPの中身: {chromedriver_contents}")
+        # ChromeDriverの解凍
+        with zipfile.ZipFile(chromedriver_zip_path, 'r') as zip_ref:
+            zip_ref.extractall(chromedriver_extract_dir)
+        print("ChromeDriverが解凍されました。")
+
+        # ダウンロードしたZIPファイルの中身をリスト表示
+        chrome_files = os.listdir(chrome_extract_dir)
+        chromedriver_files = os.listdir(chromedriver_extract_dir)
 
         # 不要なzipファイルを削除
         os.remove(chrome_zip_path)
         os.remove(chromedriver_zip_path)
 
-        # レスポンスとして中身を返す
         return jsonify({
-            "message": "ChromeとChromeDriverのZIPファイルの中身確認が完了しました。",
-            "chrome_contents": chrome_contents,
-            "chromedriver_contents": chromedriver_contents
+            "chrome_contents": chrome_files,
+            "chromedriver_contents": chromedriver_files,
+            "message": "ChromeとChromeDriverのZIPファイルの中身を展開しました。"
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)
