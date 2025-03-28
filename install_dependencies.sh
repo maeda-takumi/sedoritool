@@ -63,6 +63,10 @@ if [ ! -d "$FIREFOX_ESR_PATH" ]; then
     exit 1
   fi
 
+  # Firefox ESRに実行権限を付与
+  echo "Granting execute permissions to Firefox ESR..."
+  chmod +x "$FIREFOX_ESR_PATH"
+
   echo "Firefox ESR installed at $FIREFOX_ESR_PATH"
 else
   echo "Firefox ESR is already installed at $FIREFOX_ESR_PATH"
@@ -96,6 +100,10 @@ tar -xvzf /tmp/geckodriver.tar.gz -C /tmp/
 # Geckodriverを適切なパスに移動
 echo "Moving Geckodriver to /tmp..."
 mv /tmp/geckodriver /tmp/
+
+# Geckodriverに実行権限を付与
+echo "Granting execute permissions to Geckodriver..."
+chmod +x /tmp/geckodriver
 
 # Geckodriverのパスを環境変数PATHに追加
 echo "Adding /tmp to PATH..."
