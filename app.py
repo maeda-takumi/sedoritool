@@ -17,6 +17,7 @@ def setup_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    options.binary_location = "/tmp/chrome/chrome-linux64/chrome"
     
     # ChromeDriverのパスを指定（ログのパスを使用）
     chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
