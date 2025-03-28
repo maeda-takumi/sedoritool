@@ -40,6 +40,7 @@ echo "Pipがインストールされている場所: $(which pip)"
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
+FINAL_CHROMEDRIVER_DIR="/opt/chromedriver"
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
@@ -66,9 +67,16 @@ fi
 echo "ChromeDriverに実行権限を付与中..."
 chmod +x "$CHROMEDRIVER_PATH"
 
+# ChromeDriverのコピー先ディレクトリ作成
+mkdir -p "$FINAL_CHROMEDRIVER_DIR"
+
+# ChromeDriverを最終ディレクトリにコピー
+echo "ChromeDriverを最終ディレクトリにコピー中..."
+cp -r "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64" "$FINAL_CHROMEDRIVER_DIR"
+
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
+export PATH=$PATH:$FINAL_CHROMEDRIVER_DIR/chromedriver-linux64
 
 # ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
@@ -83,6 +91,7 @@ fi
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
 CHROME_DOWNLOAD_DIR="/tmp/chrome"
 CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
+FINAL_CHROME_DIR="/opt/chrome"
 
 # Chromeのダウンロード
 echo "Chromeをダウンロード中..."
@@ -109,14 +118,21 @@ fi
 echo "Chromeに実行権限を付与中..."
 chmod +x "$CHROME_PATH"
 
+# Chromeのコピー先ディレクトリ作成
+mkdir -p "$FINAL_CHROME_DIR"
+
+# Chromeを最終ディレクトリにコピー
+echo "Chromeを最終ディレクトリにコピー中..."
+cp -r "$CHROME_DOWNLOAD_DIR/chrome-linux64" "$FINAL_CHROME_DIR"
+
 # Chromeのパスを環境変数に追加
 echo "Chromeのパスを環境変数に追加中..."
-export CHROME_BIN="$CHROME_PATH"
-export PATH=$PATH:"$CHROME_DOWNLOAD_DIR/chrome-linux64"
+export CHROME_BIN="$FINAL_CHROME_DIR/chrome-linux64/chrome"
+export PATH=$PATH:"$FINAL_CHROME_DIR/chrome-linux64"
 
 # ChromeとChromeDriverのファイル存在確認
 echo "Chromeの存在確認..."
-if [ ! -f "$CHROME_PATH" ]; then
+if [ ! -f "$CHROME_BIN" ]; then
   echo "Chromeが正しくインストールされていません。終了します..."
   exit 1
 else
@@ -126,6 +142,7 @@ fi
 
 # インストール後のクリーンアップ
 rm /tmp/chrome.zip
+rm /tmp/chromedriver.zip
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
