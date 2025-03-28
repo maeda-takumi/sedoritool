@@ -45,19 +45,20 @@ fi
 
 # ダウンロードした.debファイルを解凍してインストール
 echo "Extracting Chromium..."
-mkdir -p /opt/chromium
-dpkg-deb -x "$CHROMIUM_DEB_FILE" /opt/chromium
+CHROMIUM_INSTALL_DIR="/tmp/chromium-install"
+mkdir -p "$CHROMIUM_INSTALL_DIR"
+dpkg-deb -x "$CHROMIUM_DEB_FILE" "$CHROMIUM_INSTALL_DIR"
 
 # Chromiumのインストール確認
-if ! command -v /opt/chromium/usr/bin/chromium-browser &> /dev/null; then
+if ! command -v "$CHROMIUM_INSTALL_DIR/usr/bin/chromium-browser" &> /dev/null; then
   echo "Chromium installation failed. Exiting..."
   exit 1
 else
   echo "Chromium installed successfully."
-  echo "Chromium installed at: /opt/chromium/usr/bin/chromium-browser"
+  echo "Chromium installed at: $CHROMIUM_INSTALL_DIR/usr/bin/chromium-browser"
   
   # Chromiumのバージョン情報をログに出力
-  /opt/chromium/usr/bin/chromium-browser --version
+  "$CHROMIUM_INSTALL_DIR/usr/bin/chromium-browser" --version
 fi
 
 # ChromeDriverのインストール
@@ -102,7 +103,7 @@ else
 fi
 
 # Chromiumのインストール先を確認
-echo "Chromium installed at: /opt/chromium/usr/bin/chromium-browser"
+echo "Chromium installed at: $CHROMIUM_INSTALL_DIR/usr/bin/chromium-browser"
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
 echo "Installing Python dependencies from requirements.txt..."
