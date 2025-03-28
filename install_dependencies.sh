@@ -132,3 +132,5 @@ echo "インストールが完了しました！"
 
 /tmp/chrome/chrome-linux64/chrome --version
 /tmp/chromedriver/chromedriver-linux64/chromedriver --version
+ls /tmp/chrome/chrome-linux64/chrome
+ls /tmp/chromedriver/chromedriver-linux64/chromedriver
