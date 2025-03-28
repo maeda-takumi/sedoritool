@@ -138,3 +138,8 @@ ls -l /tmp
 ls /tmp/chromedriver/chromedriver-linux64/chromedriver
 ls /tmp/chrome/chrome-linux64/chrome
 
+which chromedriver
+which chrome
+
+pip show selenium
+pip install --upgrade selenium
