@@ -4,30 +4,29 @@ from flask import Flask, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 app = Flask(__name__)
 
 def setup_driver():
     options = Options()
     options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--headless")
-    # options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
     
-    # Firefoxのパスを明示的に指定
-    firefox_binary_path = '/tmp/firefox-esr/firefox'  # Firefox ESRのインストール場所を指定
-    options.binary = firefox_binary_path  # Firefoxのバイナリを指定
+    # Chromiumのパスを明示的に指定
+    chromium_binary_path = '/usr/bin/chromium-browser'  # Chromiumのインストール場所を指定
+    options.binary_location = chromium_binary_path  # Chromiumのバイナリを指定
 
-    # Geckodriverのパスを指定
-    geckodriver_path = "/tmp/geckodriver"
-    service = Service(geckodriver_path)
+    # ChromeDriverのパスを指定
+    chromedriver_path = "/tmp/chromedriver"
+    service = Service(chromedriver_path)
 
-    driver = webdriver.Firefox(service=service, options=options)
+    driver = webdriver.Chrome(service=service, options=options)
 
     return driver
 
