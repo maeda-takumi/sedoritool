@@ -29,7 +29,7 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
 
 
 # Firefox ESRのダウンロードURL（最新バージョンのURLを指定）
-FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/102.9.0esr/linux-x86_64/en-US/firefox-102.9.0esr.tar.bz2"
+FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/115.21.0esr/linux-x86_64/en-US/firefox-115.21.0esr.tar.bz2"
 FIREFOX_ESR_DOWNLOAD_DIR="/tmp/firefox-esr"
 FIREFOX_ESR_PATH="$FIREFOX_ESR_DOWNLOAD_DIR/firefox"
 
@@ -71,6 +71,7 @@ if [ ! -d "$FIREFOX_ESR_PATH" ]; then
 else
   echo "Firefox ESR is already installed at $FIREFOX_ESR_PATH"
 fi
+
 
 
 # GeckodriverのURLを構築
