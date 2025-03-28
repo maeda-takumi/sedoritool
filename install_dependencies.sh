@@ -25,7 +25,7 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libxtst6 \
   libsecret-1-0 \
   libenchant-2-2 \
-  chromium-browser \
+  # chromium-browser \
   && rm -rf /var/lib/apt/lists/*
 
 # Chromiumのインストール確認
