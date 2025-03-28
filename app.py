@@ -1,34 +1,28 @@
 import os
-import subprocess
 from flask import Flask, request, jsonify
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
 def setup_driver():
+    # ChromeOptionsの設定
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     
-    # Chromiumのパスを明示的に指定
-    chromium_binary_path = '/usr/bin/chromium-browser'  # Chromiumのインストール場所を指定
-    options.binary_location = chromium_binary_path  # Chromiumのバイナリを指定
-
-    # ChromeDriverのパスを指定
-    chromedriver_path = "/tmp/chromedriver"
+    # ChromeDriverのパスを指定（ログのパスを使用）
+    chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
     service = Service(chromedriver_path)
 
-    driver = webdriver.Chrome(service=service, options=options)
+    # WebDriverのインスタンスを作成
+    driver = webdriver.Chrome(service=service, options=options)  # ここで options を渡す
 
     return driver
+
 
 @app.route("/", methods=["GET"])
 def home():
