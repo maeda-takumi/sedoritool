@@ -67,6 +67,7 @@ def install_chrome():
 
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
+                print("driverを取得しました")  # ここでメッセージを表示
                 return driver
             except Exception as e:
                 print(f"Error creating WebDriver: {e}")
