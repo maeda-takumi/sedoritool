@@ -25,8 +25,30 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libxtst6 \
   libsecret-1-0 \
   libenchant-2-2 \
-  # chromium-browser \
   && rm -rf /var/lib/apt/lists/*
+
+# 手動でChromiumをダウンロードする部分を追加
+CHROMIUM_URL="https://download-chromium.appspot.com/dl/ubuntu?type=deb"
+CHROMIUM_DOWNLOAD_DIR="/tmp/chromium"
+CHROMIUM_DEB_FILE="$CHROMIUM_DOWNLOAD_DIR/chromium.deb"
+
+# Chromiumのダウンロード
+echo "Downloading Chromium..."
+mkdir -p "$CHROMIUM_DOWNLOAD_DIR"
+curl -L "$CHROMIUM_URL" -o "$CHROMIUM_DEB_FILE"
+
+# ダウンロードしたファイルが正常かを確認
+if [ $? -ne 0 ]; then
+  echo "Error downloading Chromium. Exiting..."
+  exit 1
+fi
+
+# ダウンロードした.debファイルをインストール
+echo "Installing Chromium..."
+sudo dpkg -i "$CHROMIUM_DEB_FILE"
+
+# 依存関係の解決
+sudo apt-get install -f
 
 # Chromiumのインストール確認
 if ! command -v chromium-browser &> /dev/null; then
