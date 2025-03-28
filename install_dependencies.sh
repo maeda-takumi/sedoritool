@@ -38,7 +38,7 @@ echo "Pipがインストールされている場所: $(which pip)"
 
 # ChromeDriverのインストール
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
-CHROMEDRIVER_DOWNLOAD_DIR="/home/render/chromedriver"
+CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
 
 # ChromeDriverのダウンロード
@@ -68,7 +68,7 @@ chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/home/render/chromedriver/chromedriver-linux64
+export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
 
 # ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
@@ -81,7 +81,7 @@ fi
 
 # Chromeのインストール
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
-CHROME_DOWNLOAD_DIR="/home/render/chrome"
+CHROME_DOWNLOAD_DIR="/tmp/chrome"
 CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
 
 # Chromeのダウンロード
@@ -124,24 +124,8 @@ else
   echo "Chromeのパス: $CHROME_BIN"
 fi
 
-# Chrome と ChromeDriver を新しいディレクトリにコピー
-echo "Chrome と ChromeDriver を新しいディレクトリにコピー中..."
-cp -r /tmp/chrome-linux64 /home/render/chrome
-cp -r /tmp/chromedriver-linux64 /home/render/chromedriver
-
-# 実行権限を再設定
-echo "実行権限を再設定中..."
-chmod +x /home/render/chrome/chrome-linux64/chrome
-chmod +x /home/render/chromedriver/chromedriver-linux64/chromedriver
-
-# パスを再設定
-echo "新しいパスを環境変数に追加中..."
-export CHROME_BIN="/home/render/chrome/chrome-linux64/chrome"
-export PATH=$PATH:/home/render/chromedriver/chromedriver-linux64
-
 # インストール後のクリーンアップ
 rm /tmp/chrome.zip
-rm /tmp/chromedriver.zip
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
