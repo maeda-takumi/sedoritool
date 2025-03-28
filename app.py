@@ -61,10 +61,10 @@ def install_chrome():
                 chrome_options.add_argument('--headless')  # ヘッドレスモードで起動
                 chrome_options.add_argument('--no-sandbox')  # セキュリティ回避
                 chrome_options.add_argument('--disable-dev-shm-usage')  # システムリソース回避
-
+        
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path)
-
+        
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
                 print("driverを取得しました")  # ここでメッセージを表示
@@ -75,16 +75,8 @@ def install_chrome():
 
         # WebDriverを作成
         driver = create_webdriver()
-        
-        if driver:
-            try:
-                # WebDriverを使った操作
-                driver.get("https://www.google.com/")
-                print(driver.title)
-            except Exception as e:
-                print(f"Error during web interaction: {e}")
-            finally:
-                driver.quit()
+        if driver is None:
+            return jsonify({"error": "WebDriverの作成に失敗しました"}), 500
 
         # 返すJSONの内容
         return jsonify({
