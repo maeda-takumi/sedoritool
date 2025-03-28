@@ -23,17 +23,33 @@ def install_chrome():
         urllib.request.urlretrieve(chromedriver_url, chromedriver_zip_path)
         print("ChromeDriverがダウンロードされました。")
 
+        # Chromeの解凍先ディレクトリ
+        chrome_extract_dir = os.path.join(tmp_dir, "chrome")
+        if not os.path.exists(chrome_extract_dir):
+            os.makedirs(chrome_extract_dir)
+        
         # Chromeの解凍
-        chrome_extract_dir = os.path.join(tmp_dir, "chrome-linux64")
         with zipfile.ZipFile(chrome_zip_path, 'r') as zip_ref:
             zip_ref.extractall(chrome_extract_dir)
         print("Chromeが解凍されました。")
 
+        # 解凍後のファイル確認
+        if not os.path.exists(os.path.join(chrome_extract_dir, "chrome")):
+            raise FileNotFoundError("解凍されたChrome実行ファイルが見つかりません。")
+
+        # ChromeDriverの解凍先ディレクトリ
+        chromedriver_extract_dir = os.path.join(tmp_dir, "chromedriver")
+        if not os.path.exists(chromedriver_extract_dir):
+            os.makedirs(chromedriver_extract_dir)
+        
         # ChromeDriverの解凍
-        chromedriver_extract_dir = os.path.join(tmp_dir, "chromedriver-linux64")
         with zipfile.ZipFile(chromedriver_zip_path, 'r') as zip_ref:
             zip_ref.extractall(chromedriver_extract_dir)
         print("ChromeDriverが解凍されました。")
+
+        # 解凍後のChromeDriverファイル確認
+        if not os.path.exists(os.path.join(chromedriver_extract_dir, "chromedriver")):
+            raise FileNotFoundError("解凍されたChromeDriver実行ファイルが見つかりません。")
 
         # 不要なzipファイルを削除
         os.remove(chrome_zip_path)
@@ -42,10 +58,6 @@ def install_chrome():
         # 実行権限を付与
         os.chmod(os.path.join(chrome_extract_dir, "chrome"), 0o755)
         os.chmod(os.path.join(chromedriver_extract_dir, "chromedriver"), 0o755)
-
-        # インストール後に /tmp にある解凍されたファイルを削除
-        os.remove(os.path.join(chrome_extract_dir, "chrome"))
-        os.remove(os.path.join(chromedriver_extract_dir, "chromedriver"))
 
         return jsonify({"message": "ChromeとChromeDriverのインストールが完了しました!"})
 
