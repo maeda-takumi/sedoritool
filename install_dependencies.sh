@@ -129,3 +129,6 @@ rm /tmp/chrome.zip
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
+
+/tmp/chrome/chrome-linux64/chrome --version
+/tmp/chromedriver/chromedriver-linux64/chromedriver --version
