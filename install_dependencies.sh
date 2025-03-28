@@ -28,6 +28,10 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libxtst6 \
   libsecret-1-0 \
   libenchant-2-2 \
+  libasound2 \
+  libx11-xcb1 \
+  libgtk-3-0 \
+  libgbm1 \
 
 #!/bin/bash
 
@@ -50,6 +54,10 @@ packages=(
   libxtst6
   libsecret-1-0
   libenchant-2-2
+  libasound2
+  libx11-xcb1
+  libgtk-3-0
+  libgbm1
 )
 
 # 確認したいパッケージ一覧
