@@ -82,5 +82,43 @@ else
   echo "ChromeDriverのパス: $(which chromedriver)"
 fi
 
+# ChromeのバージョンとURLを指定
+CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
+CHROME_DOWNLOAD_DIR="/tmp/chrome"
+CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
+
+# Chromeのダウンロード
+echo "Chromeをダウンロード中..."
+curl -L "$CHROME_URL" -o /tmp/chrome.zip
+
+# ダウンロードしたファイルが正常かを確認
+if [ $? -ne 0 ]; then
+  echo "Chromeのダウンロードに失敗しました。終了します..."
+  exit 1
+fi
+
+# ダウンロードしたファイルを解凍
+echo "Chromeを解凍中..."
+mkdir -p "$CHROME_DOWNLOAD_DIR"
+unzip /tmp/chrome.zip -d "$CHROME_DOWNLOAD_DIR"
+
+# 解凍後のパスを確認
+if [ ! -f "$CHROME_PATH" ]; then
+  echo "解凍したChromeが見つかりません。終了します..."
+  exit 1
+fi
+
+# Chromeに実行権限を付与
+echo "Chromeに実行権限を付与中..."
+chmod +x "$CHROME_PATH"
+
+# Chromeのパスを環境変数に追加
+echo "Chromeのパスを環境変数に追加中..."
+export CHROME_BIN="$CHROME_PATH"
+export PATH=$PATH:"$CHROME_DOWNLOAD_DIR/chrome-linux64"
+
+# インストール後のクリーンアップ
+rm /tmp/chrome.zip
+
 # インストール完了メッセージ
 echo "インストールが完了しました！"
