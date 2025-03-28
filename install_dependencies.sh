@@ -5,6 +5,9 @@ echo "Installing necessary dependencies..."
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
+# aptキャッシュディレクトリを作成
+mkdir -p $APT_LISTCHACHE_DIR
+
 # 必要な依存パッケージをインストール
 echo "Installing dependencies..."
 apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
@@ -27,7 +30,7 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libenchant-2-2 \
   && rm -rf /var/lib/apt/lists/*
 
-  # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
+# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
 echo "Installing Python dependencies from requirements.txt..."
 pip install -r requirements.txt
 
@@ -61,8 +64,8 @@ echo "Granting execute permissions to ChromeDriver..."
 chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
-echo "Adding /tmp to PATH..."
-export PATH=$PATH:/tmp
+echo "Adding /tmp/chromedriver to PATH..."
+export PATH=$PATH:$CHROMEDRIVER_DOWNLOAD_DIR
 
 # インストール後のクリーンアップ
 rm /tmp/chromedriver.zip
@@ -75,7 +78,6 @@ else
   echo "ChromeDriver installed successfully."
   echo "ChromeDriver installed at: $(which chromedriver)"
 fi
-
 
 # インストールが完了したことを確認
 echo "Installation complete!"
