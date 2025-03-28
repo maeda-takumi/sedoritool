@@ -8,6 +8,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import logging
+from selenium.webdriver.common.by import By
+
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
@@ -74,6 +76,8 @@ def install_chrome():
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_driver_path
                 chrome_options.add_argument('--headless')
+                chrome_options.add_argument("--user-data-dir=/tmp/chrome_user_data")  # 一意なディレクトリを指定
+
 
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path, log_output=log_file)
