@@ -122,7 +122,7 @@ else
 fi
 
 # Firefox ESRのインストール先を確認
-echo "Firefox ESR installed at: $(which firefox)"
+echo "Firefox ESR installed at: $FIREFOX_ESR_PATH"
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
 echo "Installing Python dependencies from requirements.txt..."
