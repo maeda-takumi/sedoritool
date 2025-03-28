@@ -57,27 +57,26 @@ def install_chrome():
         # ダウンロードしたファイルのリストを取得
         chrome_files = os.listdir(chrome_extract_dir)
         chromedriver_files = os.listdir(chromedriver_extract_dir)
-        
-        print(os.path.exists(chrome_driver_path))  # Trueならファイルが存在する
-        print(os.path.exists(chrome_path))  # Trueならファイルが存在する
-        
+
+        # ファイルが存在するか確認
+        app.logger.info(f"Chromeの存在確認: {os.path.exists(chrome_path)}")
+        app.logger.info(f"ChromeDriverの存在確認: {os.path.exists(chrome_driver_path)}")
 
         try:
             # 権限変更処理
             os.chmod(chrome_driver_path, 0o755)
             os.chmod(chrome_path, 0o755)
-            logging.info("権限変更が成功しました。")  # ログとして出力
+            app.logger.info("権限変更が成功しました。")
         except Exception as e:
-            logging.error(f"権限変更に失敗しました: {e}")  # エラーメッセージをログとして出力
+            app.logger.error(f"権限変更に失敗しました: {e}")
+
         # WebDriverの作成関数
         def create_webdriver():
             try:
                 # Chromeのオプション設定
                 chrome_options = Options()
-                chrome_options.binary_location = chrome_driver_path
+                chrome_options.binary_location = chrome_path  # 修正: Chromeの実行ファイルを指定
                 chrome_options.add_argument('--headless')
-                # chrome_options.add_argument("--user-data-dir=/tmp/chrome_user_data")  # 一意なディレクトリを指定
-
 
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path, log_output=log_file)
