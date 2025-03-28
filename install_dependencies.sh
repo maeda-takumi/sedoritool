@@ -32,6 +32,13 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libx11-xcb1 \
   libgtk-3-0 \
   libgbm1 \
+  libappindicator3-1 \
+  libdbus-1-3 \
+  libgdk-pixbuf2.0-0 \
+  libjpeg62-turbo \
+  libpango-1.0-0 \
+  libvpx6
+
 
 #!/bin/bash
 
@@ -58,6 +65,12 @@ packages=(
   libx11-xcb1
   libgtk-3-0
   libgbm1
+  libappindicator3-1
+  libdbus-1-3
+  libgdk-pixbuf2.0-0
+  libjpeg62-turbo
+  libpango-1.0-0
+  libvpx6
 )
 
 # 確認したいパッケージ一覧
