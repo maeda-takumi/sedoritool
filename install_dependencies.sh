@@ -40,7 +40,7 @@ echo "Pipがインストールされている場所: $(which pip)"
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
-FINAL_CHROMEDRIVER_DIR="/opt/chromedriver"
+FINAL_CHROMEDRIVER_DIR="/home/render/chromedriver"
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
@@ -91,7 +91,7 @@ fi
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
 CHROME_DOWNLOAD_DIR="/tmp/chrome"
 CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
-FINAL_CHROME_DIR="/opt/chrome"
+FINAL_CHROME_DIR="/home/render/chrome"
 
 # Chromeのダウンロード
 echo "Chromeをダウンロード中..."
