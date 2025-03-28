@@ -55,4 +55,5 @@ def install_chrome():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # ポート番号5000でFlaskアプリを実行
+    app.run(debug=True, port=5000)
