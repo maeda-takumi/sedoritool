@@ -124,8 +124,24 @@ else
   echo "Chromeのパス: $CHROME_BIN"
 fi
 
+# Chrome と ChromeDriver を新しいディレクトリにコピー
+echo "Chrome と ChromeDriver を新しいディレクトリにコピー中..."
+cp -r /tmp/chrome-linux64 /home/render/chrome
+cp -r /tmp/chromedriver-linux64 /home/render/chromedriver
+
+# 実行権限を再設定
+echo "実行権限を再設定中..."
+chmod +x /home/render/chrome/chrome-linux64/chrome
+chmod +x /home/render/chromedriver/chromedriver-linux64/chromedriver
+
+# パスを再設定
+echo "新しいパスを環境変数に追加中..."
+export CHROME_BIN="/home/render/chrome/chrome-linux64/chrome"
+export PATH=$PATH:/home/render/chromedriver/chromedriver-linux64
+
 # インストール後のクリーンアップ
 rm /tmp/chrome.zip
+rm /tmp/chromedriver.zip
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
