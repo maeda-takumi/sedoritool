@@ -75,11 +75,19 @@ def install_chrome():
             driver = None  # driverをNoneで初期化
             try:
                 # 一意なユーザーデータディレクトリを指定
-                user_data_dir = f'/tmp/test_user_data_{uuid.uuid4()}'
-                while os.path.exists(user_data_dir):  # 既にディレクトリが存在する場合、再生成
-                    user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
-                os.makedirs(user_data_dir)
-            
+                while True:
+                    user_data_dir = f'/tmp/test_user_data_{uuid.uuid4()}'
+                    if not os.path.exists(user_data_dir):  # 存在しない場合に作成
+                        os.makedirs(user_data_dir)
+                        if os.path.exists(user_data_dir):  # 作成後に確認
+                            app.logger.info(f"ディレクトリ {user_data_dir} が作成されました。")
+                            break  # 作成成功したらループを抜ける
+                        else:
+                            app.logger.error(f"ディレクトリ {user_data_dir} の作成に失敗しました。")
+                            continue  # 作成失敗の場合は再試行
+                    else:
+                        app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
+                
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless')
@@ -123,6 +131,7 @@ def install_chrome():
                 # WebDriverを終了
                 if driver:
                     driver.quit()
+
 
         # WebDriverを作成
         driver = create_webdriver()
