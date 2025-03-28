@@ -5,26 +5,6 @@ echo "必要な依存関係をインストール中..."
 
 #!/bin/bash
 
-# チェックするディレクトリリスト
-directories=("/var/www" "/usr/local" "/mnt/data" "/data")
-
-# 各ディレクトリに対して存在確認と書き込み権限チェック
-for dir in "${directories[@]}"
-do
-  if [ -d "$dir" ]; then
-    echo "$dir は存在します。"
-
-    # 書き込み権限があるか確認
-    if [ -w "$dir" ]; then
-      echo "$dir に書き込み権限があります。"
-    else
-      echo "$dir に書き込み権限はありません。"
-    fi
-  else
-    echo "$dir は存在しません。"
-  fi
-done
-
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
@@ -48,7 +28,6 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libxtst6 \
   libsecret-1-0 \
   libenchant-2-2 \
-  && rm -rf /var/lib/apt/lists/*
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
 echo "requirements.txtからPython依存関係をインストール中..."
