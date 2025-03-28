@@ -11,8 +11,8 @@ from selenium.webdriver.chrome.options import Options
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
 
-chrome_driver_path = "/tmp/chromedriver-linux64/chromedriver"  # 解凍先のパス
-chrome_path = "/tmp/chrome-linux64/chrome"  # 解凍先のパス
+chrome_driver_path = "/tmp/chromedriver-linux64/chromedriver-linux64/chromedriver"  # 解凍先のパス
+chrome_path  = "/tmp/chrome-linux64/chrome-linux64/chrome"  # 解凍先のパス
 log_file = "/tmp/chromedriver.log"  # WebDriverのログファイル
 
 # ダウンロードと解凍先のディレクトリ
@@ -54,18 +54,18 @@ def install_chrome():
         # ダウンロードしたファイルのリストを取得
         chrome_files = os.listdir(chrome_extract_dir)
         chromedriver_files = os.listdir(chromedriver_extract_dir)
-        os.chmod(chromedriver_extract_dir, 0o755)
-        os.chmod(chrome_extract_dir, 0o755)
+        os.chmod(chrome_driver_path, 0o755)
+        os.chmod(chrome_path, 0o755)
         # WebDriverの作成関数
         def create_webdriver():
             try:
                 # Chromeのオプション設定
                 chrome_options = Options()
-                chrome_options.binary_location = chrome_extract_dir
+                chrome_options.binary_location = chrome_driver_path
                 chrome_options.add_argument('--headless')
 
                 # Chromeドライバサービスを設定
-                service = Service(executable_path=chromedriver_extract_dir, log_output=log_file)
+                service = Service(executable_path=chrome_driver_path, log_output=log_file)
 
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
