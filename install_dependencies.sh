@@ -5,7 +5,7 @@ echo "Installing necessary dependencies..."
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
-# 必要な依存パッケージをインストール
+# 必要な依存パッケージをインストール（ChromiumとChromeDriverの依存関係を含む）
 echo "Installing dependencies..."
 apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   curl \
@@ -25,105 +25,61 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libxtst6 \
   libsecret-1-0 \
   libenchant-2-2 \
+  chromium-browser \
   && rm -rf /var/lib/apt/lists/*
 
-
-# Firefox ESRのダウンロードURL（最新バージョンのURLを指定）
-FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/115.21.0esr/linux-x86_64/en-US/firefox-115.21.0esr.tar.bz2"
-FIREFOX_ESR_DOWNLOAD_DIR="/tmp/firefox-esr"
-FIREFOX_ESR_PATH="$FIREFOX_ESR_DOWNLOAD_DIR/firefox"
-
-# Firefox ESRがすでにインストールされているかチェック
-if [ ! -d "$FIREFOX_ESR_PATH" ]; then
-  # Firefox ESRをダウンロード
-  echo "Downloading Firefox ESR from $FIREFOX_ESR_URL..."
-  curl -L "$FIREFOX_ESR_URL" -o /tmp/firefox-esr.tar.bz2
-
-  # ダウンロードが成功したか確認
-  if [ $? -ne 0 ]; then
-    echo "Error downloading Firefox ESR. Exiting..."
-    exit 1
-  fi
-
-  # ダウンロードしたファイルの形式を確認
-  FILE_TYPE=$(file -b /tmp/firefox-esr.tar.bz2)
-  if [[ "$FILE_TYPE" != "bzip2 compressed data"* ]]; then
-    echo "Downloaded file is not in bzip2 format. File Type: $FILE_TYPE. Exiting..."
-    exit 1
-  fi
-
-  # ダウンロードしたファイルを解凍
-  echo "Extracting Firefox ESR..."
-  mkdir -p "$FIREFOX_ESR_DOWNLOAD_DIR"
-  tar -xvjf /tmp/firefox-esr.tar.bz2 -C "$FIREFOX_ESR_DOWNLOAD_DIR"
-
-  # 解凍後にFirefox ESRが正しくインストールされたか確認
-  if [ ! -d "$FIREFOX_ESR_PATH" ]; then
-    echo "Failed to extract Firefox ESR. Exiting..."
-    exit 1
-  fi
-
-  # Firefox ESRに実行権限を付与
-  echo "Granting execute permissions to Firefox ESR..."
-  chmod +x "$FIREFOX_ESR_PATH"
-
-  echo "Firefox ESR installed at $FIREFOX_ESR_PATH"
+# Chromiumのインストール確認
+if ! command -v chromium-browser &> /dev/null; then
+  echo "Chromium installation failed. Exiting..."
+  exit 1
 else
-  echo "Firefox ESR is already installed at $FIREFOX_ESR_PATH"
+  echo "Chromium installed successfully."
+  echo "Chromium installed at: $(which chromium-browser)"
 fi
 
+# ChromeDriverのインストール
+CHROMEDRIVER_VERSION="113.0.5672.63"  # 例としてバージョンを指定
+CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
+CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver"
 
-
-# GeckodriverのURLを構築
-GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz"
-
-# Geckodriverをダウンロード
-echo "Downloading Geckodriver..."
-curl -L "$GECKODRIVER_URL" -o /tmp/geckodriver.tar.gz
+# ChromeDriverのダウンロード
+echo "Downloading ChromeDriver..."
+curl -L "$CHROMEDRIVER_URL" -o /tmp/chromedriver.zip
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
-  echo "Error downloading Geckodriver. Exiting..."
+  echo "Error downloading ChromeDriver. Exiting..."
   exit 1
 fi
 
-# ダウンロードしたファイルの形式を確認
-FILE_TYPE=$(file -b /tmp/geckodriver.tar.gz)
-if [[ "$FILE_TYPE" != "gzip compressed data"* ]]; then
-  echo "Downloaded file is not in gzip format. File Type: $FILE_TYPE. Exiting..."
-  exit 1
-fi
+# ダウンロードしたファイルを解凍
+echo "Extracting ChromeDriver..."
+mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
+unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 
-# Geckodriverを解凍してインストール
-echo "Extracting Geckodriver..."
-tar -xvzf /tmp/geckodriver.tar.gz -C /tmp/
+# ChromeDriverに実行権限を付与
+echo "Granting execute permissions to ChromeDriver..."
+chmod +x "$CHROMEDRIVER_PATH"
 
-# Geckodriverを適切なパスに移動
-echo "Moving Geckodriver to /tmp..."
-mv /tmp/geckodriver /tmp/
-
-# Geckodriverに実行権限を付与
-echo "Granting execute permissions to Geckodriver..."
-chmod +x /tmp/geckodriver
-
-# Geckodriverのパスを環境変数PATHに追加
+# ChromeDriverのパスを環境変数PATHに追加
 echo "Adding /tmp to PATH..."
 export PATH=$PATH:/tmp
 
 # インストール後のクリーンアップ
-rm /tmp/geckodriver.tar.gz
+rm /tmp/chromedriver.zip
 
-# Geckodriverのインストールが成功したか確認
-if ! command -v geckodriver &> /dev/null; then
-  echo "Geckodriver installation failed. Exiting..."
+# ChromeDriverのインストールが成功したか確認
+if ! command -v chromedriver &> /dev/null; then
+  echo "ChromeDriver installation failed. Exiting..."
   exit 1
 else
-  echo "Geckodriver installed successfully."
-  echo "Geckodriver installed at: $(which geckodriver)"
+  echo "ChromeDriver installed successfully."
+  echo "ChromeDriver installed at: $(which chromedriver)"
 fi
 
-# Firefox ESRのインストール先を確認
-echo "Firefox ESR installed at: $FIREFOX_ESR_PATH"
+# Chromiumのインストール先を確認
+echo "Chromium installed at: $(which chromium-browser)"
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
 echo "Installing Python dependencies from requirements.txt..."
