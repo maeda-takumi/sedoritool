@@ -39,7 +39,7 @@ echo "Pipがインストールされている場所: $(which pip)"
 # ChromeDriverのインストール
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
-CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver"
+CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
@@ -68,7 +68,7 @@ chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/tmp
+export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
 
 # インストール後のクリーンアップ
 rm /tmp/chromedriver.zip
