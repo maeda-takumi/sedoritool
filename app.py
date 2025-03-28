@@ -76,7 +76,7 @@ def install_chrome():
                 # 一意なユーザーデータディレクトリを指定
                 user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
                 if not os.path.exists(user_data_dir):
-                    os.makedirs(user_data_dir)  # 新規にディレクトリを作成
+                    os.makedirs(user_data_dir)
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless')
