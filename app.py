@@ -60,12 +60,12 @@ def install_chrome():
         
 
         try:
+            # 権限変更処理
             os.chmod(chrome_driver_path, 0o755)
             os.chmod(chrome_path, 0o755)
-            print("権限変更が成功しました。")
+            logging.info("権限変更が成功しました。")  # ログとして出力
         except Exception as e:
-            print(f"権限変更に失敗しました: {e}")
-
+            logging.error(f"権限変更に失敗しました: {e}")  # エラーメッセージをログとして出力
         # WebDriverの作成関数
         def create_webdriver():
             try:
