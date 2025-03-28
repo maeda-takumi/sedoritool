@@ -4,6 +4,7 @@ import zipfile
 from flask import Flask, jsonify
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 最大100MB
 
 # ダウンロードと解凍先のディレクトリ
 tmp_dir = "/tmp"
