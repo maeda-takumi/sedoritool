@@ -27,7 +27,7 @@ def install_chrome():
         print("ChromeDriverがダウンロードされました。")
 
         # Chromeの解凍先ディレクトリ
-        chrome_extract_dir = os.path.join(tmp_dir, "chrome")
+        chrome_extract_dir = os.path.join(tmp_dir, "chrome-linux64")
         if not os.path.exists(chrome_extract_dir):
             os.makedirs(chrome_extract_dir)
         
@@ -36,14 +36,14 @@ def install_chrome():
             zip_ref.extractall(chrome_extract_dir)
         print("Chromeが解凍されました。")
 
-        # 解凍後のファイル確認
-        extracted_files = os.listdir(chrome_extract_dir)
-        print(f"解凍されたChromeファイル: {extracted_files}")  # 解凍されたファイルのリストを出力
-        if not any(f == "chrome" for f in extracted_files):
+        # 解凍後のChromeファイル確認
+        chrome_files = os.listdir(chrome_extract_dir)
+        print(f"解凍されたChromeファイル: {chrome_files}")  # chrome-linux64 フォルダ内のファイルをリスト出力
+        if "chrome" not in chrome_files:
             raise FileNotFoundError("解凍されたChrome実行ファイルが見つかりません。")
 
         # ChromeDriverの解凍先ディレクトリ
-        chromedriver_extract_dir = os.path.join(tmp_dir, "chromedriver")
+        chromedriver_extract_dir = os.path.join(tmp_dir, "chromedriver-linux64")
         if not os.path.exists(chromedriver_extract_dir):
             os.makedirs(chromedriver_extract_dir)
         
@@ -55,7 +55,7 @@ def install_chrome():
         # 解凍後のChromeDriverファイル確認
         extracted_chromedriver_files = os.listdir(chromedriver_extract_dir)
         print(f"解凍されたChromeDriverファイル: {extracted_chromedriver_files}")  # 解凍されたChromeDriverのファイルを出力
-        if not any(f == "chromedriver" for f in extracted_chromedriver_files):
+        if "chromedriver" not in extracted_chromedriver_files:
             raise FileNotFoundError("解凍されたChromeDriver実行ファイルが見つかりません。")
 
         # 不要なzipファイルを削除
