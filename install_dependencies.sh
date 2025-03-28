@@ -1,15 +1,13 @@
 #!/bin/bash
+
 # 必要な依存関係をインストール
-echo "Installing necessary dependencies..."
+echo "必要な依存関係をインストール中..."
 
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
-# aptキャッシュディレクトリを作成
-mkdir -p $APT_LISTCHACHE_DIR
-
 # 必要な依存パッケージをインストール
-echo "Installing dependencies..."
+echo "依存パッケージをインストール中..."
 apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   curl \
   ca-certificates \
@@ -31,13 +29,12 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
-echo "Installing Python dependencies from requirements.txt..."
+echo "requirements.txtからPython依存関係をインストール中..."
 pip install -r requirements.txt
 
 # Pythonのインストール先を確認
-echo "Python installed at: $(which python)"
-echo "Pip installed at: $(which pip)"
-
+echo "Pythonがインストールされている場所: $(which python)"
+echo "Pipがインストールされている場所: $(which pip)"
 
 # ChromeDriverのインストール
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
@@ -45,39 +42,45 @@ CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver"
 
 # ChromeDriverのダウンロード
-echo "Downloading ChromeDriver..."
+echo "ChromeDriverをダウンロード中..."
 curl -L "$CHROMEDRIVER_URL" -o /tmp/chromedriver.zip
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
-  echo "Error downloading ChromeDriver. Exiting..."
+  echo "ChromeDriverのダウンロードに失敗しました。終了します..."
   exit 1
 fi
 
 # ダウンロードしたファイルを解凍
-echo "Extracting ChromeDriver..."
+echo "ChromeDriverを解凍中..."
 mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
 unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 
+# 解凍後のパスを確認
+if [ ! -f "$CHROMEDRIVER_PATH" ]; then
+  echo "解凍したChromeDriverが見つかりません。終了します..."
+  exit 1
+fi
+
 # ChromeDriverに実行権限を付与
-echo "Granting execute permissions to ChromeDriver..."
+echo "ChromeDriverに実行権限を付与中..."
 chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
-echo "Adding /tmp/chromedriver to PATH..."
-export PATH=$PATH:$CHROMEDRIVER_DOWNLOAD_DIR
+echo "ChromeDriverのパスを環境変数PATHに追加中..."
+export PATH=$PATH:/tmp
 
 # インストール後のクリーンアップ
 rm /tmp/chromedriver.zip
 
-# ChromeDriverのインストールが成功したか確認
+# ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
-  echo "ChromeDriver installation failed. Exiting..."
+  echo "ChromeDriverのインストールに失敗しました。終了します..."
   exit 1
 else
-  echo "ChromeDriver installed successfully."
-  echo "ChromeDriver installed at: $(which chromedriver)"
+  echo "ChromeDriverが正常にインストールされました。"
+  echo "ChromeDriverのパス: $(which chromedriver)"
 fi
 
-# インストールが完了したことを確認
-echo "Installation complete!"
+# インストール完了メッセージ
+echo "インストールが完了しました！"
