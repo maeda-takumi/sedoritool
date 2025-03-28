@@ -79,7 +79,7 @@ def install_chrome():
         if driver:
             try:
                 # WebDriverを使った操作
-                driver.get("https://www.example.com")
+                driver.get("https://www.google.com/")
                 print(driver.title)
             except Exception as e:
                 print(f"Error during web interaction: {e}")
