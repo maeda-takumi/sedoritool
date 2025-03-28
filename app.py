@@ -88,7 +88,7 @@ def install_chrome():
                 chrome_options.add_argument("--profile-directory=Profile 1")
                 
                 # Chromeドライバサービスを設定
-                service = Service(driver_path=chrome_driver_path, log_path=log_file)
+                service = Service(driver_path=chrome_driver_path)
                 
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
