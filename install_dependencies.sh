@@ -1,14 +1,7 @@
 #!/bin/bash
-pip install -r requirements.txt
 # 必要な依存関係をインストール
 echo "必要な依存関係をインストール中..."
-
-# aptのキャッシュディレクトリを/tmpに設定
-export APT_LISTCHACHE_DIR=/tmp/apt-lists
-
-# 必要な依存パッケージをインストール
-echo "依存パッケージをインストール中..."
-apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
+apt-get update && apt-get install -y \
   curl \
   ca-certificates \
   libx11-dev \
@@ -32,14 +25,10 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
 echo "requirements.txtからPython依存関係をインストール中..."
 pip install -r requirements.txt
 
-# Pythonのインストール先を確認
-echo "Pythonがインストールされている場所: $(which python)"
-echo "Pipがインストールされている場所: $(which pip)"
-
 # ChromeDriverのインストール
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
-CHROMEDRIVER_DOWNLOAD_DIR="/home/render/project/chromedriver"
-CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
+CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"  # ダウンロード先は/tmp
+CHROMEDRIVER_INSTALL_DIR="/home/render/project/chromedriver"  # インストール先はproject
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
@@ -53,10 +42,11 @@ fi
 
 # ダウンロードしたファイルを解凍
 echo "ChromeDriverを解凍中..."
-mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
-unzip "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip" -d "$CHROMEDRIVER_DOWNLOAD_DIR"
+mkdir -p "$CHROMEDRIVER_INSTALL_DIR"
+unzip "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip" -d "$CHROMEDRIVER_INSTALL_DIR"
 
 # 解凍後のパスを確認
+CHROMEDRIVER_PATH="$CHROMEDRIVER_INSTALL_DIR/chromedriver-linux64/chromedriver"
 if [ ! -f "$CHROMEDRIVER_PATH" ]; then
   echo "解凍したChromeDriverが見つかりません。終了します..."
   exit 1
@@ -68,21 +58,12 @@ chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:"$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64"
-
-# ChromeDriverが正常にインストールされたか確認
-if ! command -v chromedriver &> /dev/null; then
-  echo "ChromeDriverのインストールに失敗しました。終了します..."
-  exit 1
-else
-  echo "ChromeDriverが正常にインストールされました。"
-  echo "ChromeDriverのパス: $(which chromedriver)"
-fi
+export PATH=$PATH:"$CHROMEDRIVER_INSTALL_DIR/chromedriver-linux64"
 
 # Chromeのインストール
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
-CHROME_DOWNLOAD_DIR="/home/render/project/chrome"
-CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
+CHROME_DOWNLOAD_DIR="/tmp/chrome"  # ダウンロード先は/tmp
+CHROME_INSTALL_DIR="/home/render/project/chrome"  # インストール先はproject
 
 # Chromeのダウンロード
 echo "Chromeをダウンロード中..."
@@ -96,10 +77,11 @@ fi
 
 # ダウンロードしたファイルを解凍
 echo "Chromeを解凍中..."
-mkdir -p "$CHROME_DOWNLOAD_DIR"
-unzip "$CHROME_DOWNLOAD_DIR/chrome.zip" -d "$CHROME_DOWNLOAD_DIR"
+mkdir -p "$CHROME_INSTALL_DIR"
+unzip "$CHROME_DOWNLOAD_DIR/chrome.zip" -d "$CHROME_INSTALL_DIR"
 
 # 解凍後のパスを確認
+CHROME_PATH="$CHROME_INSTALL_DIR/chrome-linux64/chrome"
 if [ ! -f "$CHROME_PATH" ]; then
   echo "解凍したChromeが見つかりません。終了します..."
   exit 1
@@ -112,17 +94,7 @@ chmod +x "$CHROME_PATH"
 # Chromeのパスを環境変数に追加
 echo "Chromeのパスを環境変数に追加中..."
 export CHROME_BIN="$CHROME_PATH"
-export PATH=$PATH:"$CHROME_DOWNLOAD_DIR/chrome-linux64"
-
-# ChromeとChromeDriverのファイル存在確認
-echo "Chromeの存在確認..."
-if [ ! -f "$CHROME_PATH" ]; then
-  echo "Chromeが正しくインストールされていません。終了します..."
-  exit 1
-else
-  echo "Chromeが正常にインストールされました。"
-  echo "Chromeのパス: $CHROME_BIN"
-fi
+export PATH=$PATH:"$CHROME_INSTALL_DIR/chrome-linux64"
 
 # インストール後のクリーンアップ
 rm "$CHROME_DOWNLOAD_DIR/chrome.zip"
@@ -131,10 +103,6 @@ rm "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip"
 # インストール完了メッセージ
 echo "インストールが完了しました！"
 
-# 実行確認
-which chromedriver
-which chrome
-
-# Seleniumのインストール確認とアップグレード
-pip show selenium
-pip install --upgrade selenium
+# インストール先の確認
+echo "ChromeDriverのパス: $(which chromedriver)"
+echo "Chromeのパス: $(which chrome)"
