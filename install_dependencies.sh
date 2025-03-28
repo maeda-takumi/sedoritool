@@ -70,9 +70,6 @@ chmod +x "$CHROMEDRIVER_PATH"
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
 export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
 
-# インストール後のクリーンアップ
-rm /tmp/chromedriver.zip
-
 # ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
   echo "ChromeDriverのインストールに失敗しました。終了します..."
@@ -82,7 +79,7 @@ else
   echo "ChromeDriverのパス: $(which chromedriver)"
 fi
 
-# ChromeのバージョンとURLを指定
+# Chromeのインストール
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
 CHROME_DOWNLOAD_DIR="/tmp/chrome"
 CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
@@ -116,6 +113,16 @@ chmod +x "$CHROME_PATH"
 echo "Chromeのパスを環境変数に追加中..."
 export CHROME_BIN="$CHROME_PATH"
 export PATH=$PATH:"$CHROME_DOWNLOAD_DIR/chrome-linux64"
+
+# ChromeとChromeDriverのファイル存在確認
+echo "Chromeの存在確認..."
+if [ ! -f "$CHROME_PATH" ]; then
+  echo "Chromeが正しくインストールされていません。終了します..."
+  exit 1
+else
+  echo "Chromeが正常にインストールされました。"
+  echo "Chromeのパス: $CHROME_BIN"
+fi
 
 # インストール後のクリーンアップ
 rm /tmp/chrome.zip
