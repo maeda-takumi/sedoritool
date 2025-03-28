@@ -75,12 +75,20 @@ def install_chrome():
             try:
                 # Chromeのオプション設定
                 chrome_options = Options()
-                chrome_options.binary_location = chrome_path  # 修正: Chromeの実行ファイルを指定
+                chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless')
-
+                chrome_options.add_argument('--disable-gpu')  # GPUを無効化
+                chrome_options.add_argument('--no-sandbox')  # サンドボックスを無効化
+        
+                # 一意なユーザーデータディレクトリを指定
+                user_data_dir = '/tmp/chrome_user_data'
+                if not os.path.exists(user_data_dir):
+                    os.makedirs(user_data_dir)  # 新規にディレクトリを作成
+                chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
+        
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path, log_output=log_file)
-
+        
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
                 app.logger.info("WebDriverが正常に作成されました。")
@@ -89,26 +97,27 @@ def install_chrome():
                 # WebDriver作成失敗時のエラー処理
                 error_message = traceback.format_exc()
                 app.logger.error(f"WebDriver作成エラー: {error_message}")
-
+        
                 # chromedriverの状態を調査
                 app.logger.info(f"Chrome展開先: {chrome_extract_dir} 中身: {os.listdir(chrome_extract_dir)}")
                 app.logger.info(f"ChromeDriver展開先: {chromedriver_extract_dir} 中身: {os.listdir(chromedriver_extract_dir)}")
-
+        
                 # chromedriver の依存関係をチェック
                 try:
                     dependencies = subprocess.run(["ldd", chrome_driver_path], capture_output=True, text=True)
                     app.logger.info(f"chromedriverの依存関係: \n{dependencies.stdout}")
                 except Exception as ldd_error:
                     app.logger.error(f"ldd実行エラー: {ldd_error}")
-
+        
                 # chromedriver のバージョン確認
                 try:
                     version_info = subprocess.run([chrome_driver_path, "--version"], capture_output=True, text=True)
                     app.logger.info(f"ChromeDriverバージョン: {version_info.stdout.strip()}")
                 except Exception as ver_error:
                     app.logger.error(f"ChromeDriverバージョン確認エラー: {ver_error}")
-
+        
                 return None
+
 
         # WebDriverを作成
         driver = create_webdriver()
