@@ -12,6 +12,9 @@ chromedriver_url = "https://storage.googleapis.com/chrome-for-testing-public/134
 
 @app.route('/install', methods=['GET'])
 def install_chrome():
+    chrome_extract_dir = ""
+    chromedriver_extract_dir = ""
+
     try:
         # Chromeのダウンロード
         chrome_zip_path = os.path.join(tmp_dir, "chrome.zip")
@@ -68,8 +71,8 @@ def install_chrome():
     except Exception as e:
         # エラーメッセージに解凍されたファイルのリストを追加
         error_message = str(e)
-        extracted_files = os.listdir(chrome_extract_dir) if os.path.exists(chrome_extract_dir) else []
-        extracted_chromedriver_files = os.listdir(chromedriver_extract_dir) if os.path.exists(chromedriver_extract_dir) else []
+        extracted_files = os.listdir(chrome_extract_dir) if chrome_extract_dir else []
+        extracted_chromedriver_files = os.listdir(chromedriver_extract_dir) if chromedriver_extract_dir else []
         error_message += f"\n解凍されたChromeファイル: {extracted_files}\n解凍されたChromeDriverファイル: {extracted_chromedriver_files}"
         return jsonify({"error": error_message}), 500
 
