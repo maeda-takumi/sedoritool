@@ -38,12 +38,12 @@ echo "Pipがインストールされている場所: $(which pip)"
 
 # ChromeDriverのインストール
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
-CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
+CHROMEDRIVER_DOWNLOAD_DIR="/home/render/project/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
-curl -L "$CHROMEDRIVER_URL" -o /home/render/project/chromedriver.zip
+curl -L "$CHROMEDRIVER_URL" -o "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip"
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
@@ -54,7 +54,7 @@ fi
 # ダウンロードしたファイルを解凍
 echo "ChromeDriverを解凍中..."
 mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
-unzip /home/render/project/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
+unzip "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip" -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 
 # 解凍後のパスを確認
 if [ ! -f "$CHROMEDRIVER_PATH" ]; then
@@ -68,7 +68,7 @@ chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/home/render/project/chromedriver/chromedriver-linux64
+export PATH=$PATH:"$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64"
 
 # ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
@@ -86,7 +86,7 @@ CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
 
 # Chromeのダウンロード
 echo "Chromeをダウンロード中..."
-curl -L "$CHROME_URL" -o /home/render/project/chrome.zip
+curl -L "$CHROME_URL" -o "$CHROME_DOWNLOAD_DIR/chrome.zip"
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
@@ -97,7 +97,7 @@ fi
 # ダウンロードしたファイルを解凍
 echo "Chromeを解凍中..."
 mkdir -p "$CHROME_DOWNLOAD_DIR"
-unzip /home/render/project/chrome.zip -d "$CHROME_DOWNLOAD_DIR"
+unzip "$CHROME_DOWNLOAD_DIR/chrome.zip" -d "$CHROME_DOWNLOAD_DIR"
 
 # 解凍後のパスを確認
 if [ ! -f "$CHROME_PATH" ]; then
@@ -125,14 +125,16 @@ else
 fi
 
 # インストール後のクリーンアップ
-rm /home/render/project/chrome.zip
+rm "$CHROME_DOWNLOAD_DIR/chrome.zip"
+rm "$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver.zip"
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
 
-
+# 実行確認
 which chromedriver
 which chrome
 
+# Seleniumのインストール確認とアップグレード
 pip show selenium
 pip install --upgrade selenium
