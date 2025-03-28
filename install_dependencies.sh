@@ -37,7 +37,6 @@ echo "Pip installed at: $(which pip)"
 
 
 # ChromeDriverのインストール
-CHROMEDRIVER_VERSION="113.0.5672.63"  # 例としてバージョンを指定
 CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver"
