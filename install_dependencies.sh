@@ -1,124 +1,96 @@
-#!/bin/bash
+import os
+from flask import Flask, request, jsonify
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
-# 必要な依存関係をインストール
-echo "必要な依存関係をインストール中..."
+app = Flask(__name__)
 
-# aptのキャッシュディレクトリを/tmpに設定
-export APT_LISTCHACHE_DIR=/tmp/apt-lists
+def setup_driver():
+    # ChromeOptionsの設定
+    options = Options()
+    options.add_argument("--no-sandbox")
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
 
-# 必要な依存パッケージをインストール
-echo "依存パッケージをインストール中..."
-apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
-  curl \
-  ca-certificates \
-  libx11-dev \
-  libx264-dev \
-  libfontconfig1 \
-  libxcomposite1 \
-  libxrandr2 \
-  libxi6 \
-  libnss3 \
-  libnss3-dev \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libnspr4 \
-  libxtst6 \
-  libsecret-1-0 \
-  libenchant-2-2 \
-  && rm -rf /var/lib/apt/lists/*
+    # 手動インストールしたChromeのパスを指定
+    options.binary_location = "/tmp/chrome/chrome-linux64/chrome"
 
-# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
-echo "requirements.txtからPython依存関係をインストール中..."
-pip install -r requirements.txt
+    # ChromeDriverのパスを指定
+    chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"
+    service = Service(chromedriver_path)
 
-# Pythonのインストール先を確認
-echo "Pythonがインストールされている場所: $(which python)"
-echo "Pipがインストールされている場所: $(which pip)"
+    # WebDriverのインスタンスを作成
+    driver = webdriver.Chrome(service=service, options=options)
+    
+    return driver
 
-# ChromeDriverのインストール
-CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
-CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
-CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
 
-# ChromeDriverのダウンロード
-echo "ChromeDriverをダウンロード中..."
-curl -L "$CHROMEDRIVER_URL" -o /tmp/chromedriver.zip
+@app.route("/", methods=["GET"])
+def home():
+    return "Welcome to the Mercari search tool!"
 
-# ダウンロードしたファイルが正常かを確認
-if [ $? -ne 0 ]; then
-  echo "ChromeDriverのダウンロードに失敗しました。終了します..."
-  exit 1
-fi
 
-# ダウンロードしたファイルを解凍
-echo "ChromeDriverを解凍中..."
-mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
-unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
+@app.route("/search", methods=["GET"])
+def search():
+    query = request.args.get("keyword")
+    if not query:
+        return jsonify({"error": "検索ワードを指定してください"}), 400
 
-# 解凍後のパスを確認
-if [ ! -f "$CHROMEDRIVER_PATH" ]; then
-  echo "解凍したChromeDriverが見つかりません。終了します..."
-  exit 1
-fi
+    driver = setup_driver()
 
-# ChromeDriverに実行権限を付与
-echo "ChromeDriverに実行権限を付与中..."
-chmod +x "$CHROMEDRIVER_PATH"
+    try:
+        driver.get("https://jp.mercari.com/")
+        print("ページを開きました")
 
-# ChromeDriverのパスを環境変数PATHに追加
-echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
+        # 検索ボックスが表示されるまで待機
+        search_box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='search']"))
+        )
+        print("検索ボックスを検出")
 
-# インストール後のクリーンアップ
-rm /tmp/chromedriver.zip
+        # 検索ワードを入力
+        search_box.send_keys(query)
+        search_box.send_keys(Keys.RETURN)
+        print(f"検索ワード '{query}' を入力し送信")
 
-# ChromeDriverが正常にインストールされたか確認
-if ! command -v chromedriver &> /dev/null; then
-  echo "ChromeDriverのインストールに失敗しました。終了します..."
-  exit 1
-else
-  echo "ChromeDriverが正常にインストールされました。"
-  echo "ChromeDriverのパス: $(which chromedriver)"
-fi
+        # 検索結果が表示されるまで待機
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "sc-bcd1c877-2"))
+        )
+        print("検索結果を検出")
 
-# ChromeのバージョンとURLを指定
-CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
-CHROME_DOWNLOAD_DIR="/tmp/chrome"
-CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
+        items = driver.find_elements(By.CLASS_NAME, "sc-bcd1c877-2")
 
-# Chromeのダウンロード
-echo "Chromeをダウンロード中..."
-curl -L "$CHROME_URL" -o /tmp/chrome.zip
+        if items:
+            first_item = items[0]
+            item_price = first_item.find_element(By.CLASS_NAME, "number__6b270ca7").text
+            item_url = first_item.find_element(By.TAG_NAME, "a").get_attribute("href")
+            result = {
+                "name": query,
+                "price": item_price,
+                "url": item_url
+            }
+        else:
+            result = {"name": "取得できませんでした", "price": "取得できませんでした", "url": "取得できませんでした"}
 
-# ダウンロードしたファイルが正常かを確認
-if [ $? -ne 0 ]; then
-  echo "Chromeのダウンロードに失敗しました。終了します..."
-  exit 1
-fi
+    except TimeoutException:
+        result = {"error": "タイムアウトしました（要素が見つかりません）"}
+    except Exception as e:
+        result = {"error": str(e)}
+    finally:
+        driver.quit()
+        print("ドライバーを閉じました")
 
-# ダウンロードしたファイルを解凍
-echo "Chromeを解凍中..."
-mkdir -p "$CHROME_DOWNLOAD_DIR"
-unzip /tmp/chrome.zip -d "$CHROME_DOWNLOAD_DIR"
+    return jsonify(result)
 
-# 解凍後のパスを確認
-if [ ! -f "$CHROME_PATH" ]; then
-  echo "解凍したChromeが見つかりません。終了します..."
-  exit 1
-fi
 
-# Chromeに実行権限を付与
-echo "Chromeに実行権限を付与中..."
-chmod +x "$CHROME_PATH"
-
-# Chromeのパスを環境変数に追加
-echo "Chromeのパスを環境変数に追加中..."
-export CHROME_BIN="$CHROME_PATH"
-export PATH=$PATH:"$CHROME_DOWNLOAD_DIR/chrome-linux64"
-
-# インストール後のクリーンアップ
-rm /tmp/chrome.zip
-
-# インストール完了メッセージ
-echo "インストールが完了しました！"
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
