@@ -3,6 +3,10 @@ pip install -r requirements.txt
 # 必要な依存関係をインストール
 echo "必要な依存関係をインストール中..."
 
+ls -ld /home/render
+df -h
+
+
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
