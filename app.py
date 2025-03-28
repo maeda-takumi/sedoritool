@@ -121,7 +121,7 @@ def install_chrome():
             finally:
                 # WebDriverを終了
                 if driver:
-        driver.quit()
+                    driver.quit()
         # WebDriverを作成
         driver = create_webdriver()
         if driver is None:
