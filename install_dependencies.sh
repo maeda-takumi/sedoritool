@@ -1,4 +1,32 @@
 #!/bin/bash
+# 必要な依存関係をインストール
+echo "Installing necessary dependencies..."
+
+# set -e  # エラー発生時にスクリプトを停止
+
+apt-get update && \
+apt-get install -y \
+  wget \
+  curl \
+  ca-certificates \
+  unzip \
+  libx11-dev \
+  libx264-dev \
+  libfontconfig1 \
+  libxcomposite1 \
+  libxrandr2 \
+  libxi6 \
+  libnss3 \
+  libnss3-dev \
+  libatk-bridge2.0-0 \
+  libatk1.0-0 \
+  libcups2 \
+  libnspr4 \
+  libxtst6 \
+  libsecret-1-0 \
+  libenchant-2-2 || { echo "Installation failed"; exit 1; }
+
+rm -rf /var/lib/apt/lists/*
 
 # Firefox ESRのダウンロードURL（最新バージョンのURLを指定）
 FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/102.9.0esr/linux-x86_64/en-US/firefox-102.9.0esr.tar.bz2"
@@ -39,57 +67,6 @@ if [ ! -d "$FIREFOX_ESR_PATH" ]; then
 else
   echo "Firefox ESR is already installed at $FIREFOX_ESR_PATH"
 fi
-
-# 必要な依存関係をインストール
-echo "Installing necessary dependencies..."
-
-set -e
-
-PACKAGES=(
-  "wget"
-  "curl"
-  "ca-certificates"
-  "unzip"
-  "libx11-dev"
-  "libx264-dev"
-  "libfontconfig1"
-  "libxcomposite1"
-  "libxrandr2"
-  "libxi6"
-  "libnss3"
-  "libnss3-dev"
-  "libatk-bridge2.0-0"
-  "libatk1.0-0"
-  "libcups2"
-  "libnspr4"
-  "libxtst6"
-  "libsecret-1-0"
-  "libenchant-2-2"
-)
-
-BASE_URL="http://ftp.us.debian.org/debian"
-
-for pkg in "${PACKAGES[@]}"; do
-  echo "Searching for $pkg..."
-  FILE_PATH=$(apt-cache show "$pkg" | grep Filename | awk '{print $2}')
-
-  if [ -z "$FILE_PATH" ]; then
-    echo "Error: Could not find package $pkg"
-    exit 1
-  fi
-
-  FULL_URL="${BASE_URL}/${FILE_PATH}"
-  echo "Downloading from $FULL_URL..."
-  wget -O "/tmp/${pkg}.deb" "$FULL_URL"
-
-  echo "Installing $pkg..."
-  dpkg -i "/tmp/${pkg}.deb" || apt-get -f install -y
-done
-
-# クリーンアップ
-rm -rf /tmp/*.deb
-rm -rf /var/lib/apt/lists/*
-
 
 
 # GeckodriverのURLを構築
