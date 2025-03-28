@@ -35,11 +35,14 @@ if ! command -v chromium-browser &> /dev/null; then
 else
   echo "Chromium installed successfully."
   echo "Chromium installed at: $(which chromium-browser)"
+  
+  # Chromiumのバージョン情報をログに出力
+  chromium-browser --version
 fi
 
 # ChromeDriverのインストール
 CHROMEDRIVER_VERSION="113.0.5672.63"  # 例としてバージョンを指定
-CHROMEDRIVER_URL="https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chromedriver-linux64.zip"
 CHROMEDRIVER_DOWNLOAD_DIR="/tmp/chromedriver"
 CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver"
 
