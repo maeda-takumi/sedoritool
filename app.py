@@ -75,8 +75,9 @@ def install_chrome():
             try:
                 # 一意なユーザーデータディレクトリを指定
                 user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
-                if not os.path.exists(user_data_dir):
-                    os.makedirs(user_data_dir)
+                while os.path.exists(user_data_dir):  # 既にディレクトリが存在する場合、再生成
+                    user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
+                os.makedirs(user_data_dir)
         
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
@@ -117,9 +118,6 @@ def install_chrome():
                     app.logger.error(f"ChromeDriverバージョン確認エラー: {ver_error}")
                 
                 return None
-
-
-
 
         # WebDriverを作成
         driver = create_webdriver()
