@@ -54,7 +54,7 @@ fi
 # ダウンロードしたファイルを解凍
 echo "ChromeDriverを解凍中..."
 mkdir -p "$CHROMEDRIVER_DOWNLOAD_DIR"
-unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
+unzip /home/render/project/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 
 # 解凍後のパスを確認
 if [ ! -f "$CHROMEDRIVER_PATH" ]; then
@@ -81,12 +81,12 @@ fi
 
 # Chromeのインストール
 CHROME_URL="https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/linux64/chrome-linux64.zip"
-CHROME_DOWNLOAD_DIR="/tmp/chrome"
+CHROME_DOWNLOAD_DIR="/home/render/project/chrome"
 CHROME_PATH="$CHROME_DOWNLOAD_DIR/chrome-linux64/chrome"
 
 # Chromeのダウンロード
 echo "Chromeをダウンロード中..."
-curl -L "$CHROME_URL" -o /tmp/chrome.zip
+curl -L "$CHROME_URL" -o /home/render/project/chrome.zip
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
@@ -97,7 +97,7 @@ fi
 # ダウンロードしたファイルを解凍
 echo "Chromeを解凍中..."
 mkdir -p "$CHROME_DOWNLOAD_DIR"
-unzip /tmp/chrome.zip -d "$CHROME_DOWNLOAD_DIR"
+unzip /home/render/project/chrome.zip -d "$CHROME_DOWNLOAD_DIR"
 
 # 解凍後のパスを確認
 if [ ! -f "$CHROME_PATH" ]; then
@@ -125,18 +125,11 @@ else
 fi
 
 # インストール後のクリーンアップ
-rm /tmp/chrome.zip
+rm /home/render/project/chrome.zip
 
 # インストール完了メッセージ
 echo "インストールが完了しました！"
 
-/tmp/chrome/chrome-linux64/chrome --version
-/tmp/chromedriver/chromedriver-linux64/chromedriver --version
-ls /tmp/chrome/chrome-linux64/chrome
-ls /tmp/chromedriver/chromedriver-linux64/chromedriver
-ls -l /tmp
-ls /tmp/chromedriver/chromedriver-linux64/chromedriver
-ls /tmp/chrome/chrome-linux64/chrome
 
 which chromedriver
 which chrome
