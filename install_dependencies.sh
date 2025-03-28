@@ -63,7 +63,5 @@ echo "Pipがインストールされている場所: $(which pip)"
 # requirements.txtからPythonパッケージをインストール
 pip install -r requirements.txt
 
-# PythonスクリプトでChromeとChromeDriverをインストール
-python3 install_chrome.py
 
 echo "インストールが完了しました！"
