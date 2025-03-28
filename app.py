@@ -34,8 +34,9 @@ def install_chrome():
         print("Chromeが解凍されました。")
 
         # 解凍後のファイル確認
-        print(f"解凍されたファイル: {os.listdir(chrome_extract_dir)}")  # 解凍されたファイルのリストを出力
-        if not any(f == "chrome" for f in os.listdir(chrome_extract_dir)):
+        extracted_files = os.listdir(chrome_extract_dir)
+        print(f"解凍されたChromeファイル: {extracted_files}")  # 解凍されたファイルのリストを出力
+        if not any(f == "chrome" for f in extracted_files):
             raise FileNotFoundError("解凍されたChrome実行ファイルが見つかりません。")
 
         # ChromeDriverの解凍先ディレクトリ
@@ -49,8 +50,9 @@ def install_chrome():
         print("ChromeDriverが解凍されました。")
 
         # 解凍後のChromeDriverファイル確認
-        print(f"解凍されたChromeDriverファイル: {os.listdir(chromedriver_extract_dir)}")  # 解凍されたChromeDriverのファイルを出力
-        if not any(f == "chromedriver" for f in os.listdir(chromedriver_extract_dir)):
+        extracted_chromedriver_files = os.listdir(chromedriver_extract_dir)
+        print(f"解凍されたChromeDriverファイル: {extracted_chromedriver_files}")  # 解凍されたChromeDriverのファイルを出力
+        if not any(f == "chromedriver" for f in extracted_chromedriver_files):
             raise FileNotFoundError("解凍されたChromeDriver実行ファイルが見つかりません。")
 
         # 不要なzipファイルを削除
@@ -64,7 +66,12 @@ def install_chrome():
         return jsonify({"message": "ChromeとChromeDriverのインストールが完了しました!"})
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # エラーメッセージに解凍されたファイルのリストを追加
+        error_message = str(e)
+        extracted_files = os.listdir(chrome_extract_dir) if os.path.exists(chrome_extract_dir) else []
+        extracted_chromedriver_files = os.listdir(chromedriver_extract_dir) if os.path.exists(chromedriver_extract_dir) else []
+        error_message += f"\n解凍されたChromeファイル: {extracted_files}\n解凍されたChromeDriverファイル: {extracted_chromedriver_files}"
+        return jsonify({"error": error_message}), 500
 
 if __name__ == '__main__':
     # Renderで自動的に指定されたポートを使用
