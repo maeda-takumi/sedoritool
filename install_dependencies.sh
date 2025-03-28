@@ -75,7 +75,7 @@ fi
 
 
 # GeckodriverのURLを構築
-GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz"
+GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz"
 
 # Geckodriverをダウンロード
 echo "Downloading Geckodriver..."
