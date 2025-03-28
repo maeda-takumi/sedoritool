@@ -54,6 +54,10 @@ def install_chrome():
         # ダウンロードしたファイルのリストを取得
         chrome_files = os.listdir(chrome_extract_dir)
         chromedriver_files = os.listdir(chromedriver_extract_dir)
+        
+        print(os.path.exists(chrome_driver_path))  # Trueならファイルが存在する
+        print(os.path.exists(chrome_path))  # Trueならファイルが存在する
+        
         os.chmod(chrome_driver_path, 0o755)
         os.chmod(chrome_path, 0o755)
         # WebDriverの作成関数
