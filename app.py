@@ -76,7 +76,7 @@ def install_chrome():
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_driver_path
                 chrome_options.add_argument('--headless')
-                chrome_options.add_argument("--user-data-dir=/tmp/chrome_user_data")  # 一意なディレクトリを指定
+                # chrome_options.add_argument("--user-data-dir=/tmp/chrome_user_data")  # 一意なディレクトリを指定
 
 
                 # Chromeドライバサービスを設定
