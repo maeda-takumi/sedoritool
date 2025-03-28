@@ -5,7 +5,7 @@ echo "必要な依存関係をインストール中..."
 
 ls -ld /home/render
 df -h
-
+sudo chmod u+w /home/render
 
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
