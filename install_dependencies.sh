@@ -5,7 +5,7 @@ echo "Installing necessary dependencies..."
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
-# 必要な依存パッケージをインストール（ChromiumとChromeDriverの依存関係を含む）
+# 必要な依存パッケージをインストール
 echo "Installing dependencies..."
 apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   curl \
@@ -27,4 +27,13 @@ apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   libenchant-2-2 \
   && rm -rf /var/lib/apt/lists/*
 
-echo "Dependencies installed successfully."
+  # Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
+echo "Installing Python dependencies from requirements.txt..."
+pip install -r requirements.txt
+
+# Pythonのインストール先を確認
+echo "Python installed at: $(which python)"
+echo "Pip installed at: $(which pip)"
+
+# インストールが完了したことを確認
+echo "Installation complete!"
