@@ -82,7 +82,8 @@ def install_chrome():
                 chrome_options.add_argument('--headless')
                 chrome_options.add_argument('--disable-gpu')  # GPUを無効化
                 chrome_options.add_argument('--no-sandbox')  # サンドボックスを無効化
-                chrome_options.add_argument(f"--user-data-dir={user_data_dir}")
+                chrome_options.add_argument("--user-data-dir=/tmp/chrome-user-data-dir")
+                chrome_options.add_argument("--profile-directory=Profile 1")
                 
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path, log_output=log_file)
