@@ -3,9 +3,27 @@ pip install -r requirements.txt
 # 必要な依存関係をインストール
 echo "必要な依存関係をインストール中..."
 
-ls -ld /home/render
-df -h
-sudo chmod u+w /home/render
+#!/bin/bash
+
+# チェックするディレクトリリスト
+directories=("/var/www" "/usr/local" "/mnt/data" "/data")
+
+# 各ディレクトリに対して存在確認と書き込み権限チェック
+for dir in "${directories[@]}"
+do
+  if [ -d "$dir" ]; then
+    echo "$dir は存在します。"
+
+    # 書き込み権限があるか確認
+    if [ -w "$dir" ]; then
+      echo "$dir に書き込み権限があります。"
+    else
+      echo "$dir に書き込み権限はありません。"
+    fi
+  else
+    echo "$dir は存在しません。"
+  fi
+done
 
 # aptのキャッシュディレクトリを/tmpに設定
 export APT_LISTCHACHE_DIR=/tmp/apt-lists
