@@ -54,7 +54,8 @@ def install_chrome():
         # ダウンロードしたファイルのリストを取得
         chrome_files = os.listdir(chrome_extract_dir)
         chromedriver_files = os.listdir(chromedriver_extract_dir)
-
+        os.chmod(chrome_driver_path, 0o755)
+        os.chmod(chrome_path, 0o755)
         # WebDriverの作成関数
         def create_webdriver():
             try:
@@ -62,8 +63,6 @@ def install_chrome():
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path
                 chrome_options.add_argument('--headless')
-                chrome_options.add_argument('--no-sandbox')
-                chrome_options.add_argument('--disable-dev-shm-usage')
 
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path, log_output=log_file)
