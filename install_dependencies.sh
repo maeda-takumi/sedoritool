@@ -2,14 +2,14 @@
 # 必要な依存関係をインストール
 echo "Installing necessary dependencies..."
 
-# set -e  # エラー発生時にスクリプトを停止
+# aptのキャッシュディレクトリを/tmpに設定
+export APT_LISTCHACHE_DIR=/tmp/apt-lists
 
-apt-get update && \
-apt-get install -y \
-  wget \
+# 必要な依存パッケージをインストール
+echo "Installing dependencies..."
+apt-get update -o Dir::Cache=$APT_LISTCHACHE_DIR && apt-get install -y \
   curl \
   ca-certificates \
-  unzip \
   libx11-dev \
   libx264-dev \
   libfontconfig1 \
@@ -24,9 +24,9 @@ apt-get install -y \
   libnspr4 \
   libxtst6 \
   libsecret-1-0 \
-  libenchant-2-2 || { echo "Installation failed"; exit 1; }
+  libenchant-2-2 \
+  && rm -rf /var/lib/apt/lists/*
 
-rm -rf /var/lib/apt/lists/*
 
 # Firefox ESRのダウンロードURL（最新バージョンのURLを指定）
 FIREFOX_ESR_URL="https://ftp.mozilla.org/pub/firefox/releases/102.9.0esr/linux-x86_64/en-US/firefox-102.9.0esr.tar.bz2"
