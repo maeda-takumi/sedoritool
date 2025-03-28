@@ -43,7 +43,7 @@ CHROMEDRIVER_PATH="$CHROMEDRIVER_DOWNLOAD_DIR/chromedriver-linux64/chromedriver"
 
 # ChromeDriverのダウンロード
 echo "ChromeDriverをダウンロード中..."
-curl -L "$CHROMEDRIVER_URL" -o /tmp/chromedriver.zip
+curl -L "$CHROMEDRIVER_URL" -o /home/render/project/chromedriver.zip
 
 # ダウンロードしたファイルが正常かを確認
 if [ $? -ne 0 ]; then
@@ -68,7 +68,7 @@ chmod +x "$CHROMEDRIVER_PATH"
 
 # ChromeDriverのパスを環境変数PATHに追加
 echo "ChromeDriverのパスを環境変数PATHに追加中..."
-export PATH=$PATH:/tmp/chromedriver/chromedriver-linux64
+export PATH=$PATH:/home/render/project/chromedriver/chromedriver-linux64
 
 # ChromeDriverが正常にインストールされたか確認
 if ! command -v chromedriver &> /dev/null; then
