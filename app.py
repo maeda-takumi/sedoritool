@@ -7,10 +7,11 @@ from flask import Flask, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import logging
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
-
+logging.basicConfig(level=logging.INFO)
 chrome_driver_path = "/tmp/chromedriver-linux64/chromedriver-linux64/chromedriver"  # 解凍先のパス
 chrome_path  = "/tmp/chrome-linux64/chrome-linux64/chrome"  # 解凍先のパス
 log_file = "/tmp/chromedriver.log"  # WebDriverのログファイル
