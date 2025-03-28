@@ -42,27 +42,78 @@ fi
 
 # 必要な依存関係をインストール
 echo "Installing necessary dependencies..."
-apt-get update && apt-get install -y \
-  wget \
-  curl \
-  ca-certificates \
-  unzip \
-  libx11-dev \
-  libx264-dev \
-  libfontconfig1 \
-  libxcomposite1 \
-  libxrandr2 \
-  libxi6 \
-  libnss3 \
-  libnss3-dev \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libnspr4 \
-  libxtst6 \
-  libsecret-1-0 \
-  libenchant-2-2 \
-  && rm -rf /var/lib/apt/lists/*
+# 必要なライブラリのURLを定義
+BASE_URL="http://ftp.us.debian.org/debian/pool/main"
+
+# インストール対象のパッケージ一覧
+PACKAGES=(
+  "wget/wget_1.21.3-1_amd64.deb"
+  "c/curl/curl_7.74.0-1.3+deb11u7_amd64.deb"
+  "c/ca-certificates/ca-certificates_20211016_all.deb"
+  "u/unzip/unzip_6.0-26_amd64.deb"
+  "libx/libx11/libx11-dev_1.7.2-1_amd64.deb"
+  "x/x264/libx264-dev_0.160.3011+gitcde9a93-2.1_amd64.deb"
+  "f/fontconfig/libfontconfig1_2.13.1-4.2_amd64.deb"
+  "libx/libxcomposite/libxcomposite1_0.4.5-1_amd64.deb"
+  "libx/libxrandr/libxrandr2_1.5.1-1_amd64.deb"
+  "libx/libxi/libxi6_1.7.10-1_amd64.deb"
+  "n/nss/libnss3_3.61-1_amd64.deb"
+  "n/nss/libnss3-dev_3.61-1_amd64.deb"
+  "a/atk/libatk-bridge2.0-0_2.38.0-1_amd64.deb"
+  "a/atk/libatk1.0-0_2.38.0-1_amd64.deb"
+  "c/cups/libcups2_2.3.3op2-3+deb11u1_amd64.deb"
+  "n/nspr/libnspr4_4.29-1_amd64.deb"
+  "x/xtst/libxtst6_1.2.3-1_amd64.deb"
+  "libs/libsecret/libsecret-1-0_0.20.4-2_amd64.deb"
+  "e/enchant/libenchant-2-2_2.2.15-1_amd64.deb"
+)
+
+# ダウンロードディレクトリ
+DOWNLOAD_DIR="/tmp/deb-packages"
+mkdir -p "$DOWNLOAD_DIR"
+
+# 各パッケージをダウンロードしてインストール
+for PACKAGE in "${PACKAGES[@]}"; do
+  PACKAGE_NAME=$(basename "$PACKAGE")
+  PACKAGE_PATH="$DOWNLOAD_DIR/$PACKAGE_NAME"
+
+  # すでにインストール済みかチェック
+  if dpkg -l | grep -q "^ii  ${PACKAGE_NAME%%_*} "; then
+    echo "$PACKAGE_NAME is already installed."
+    continue
+  fi
+
+  # パッケージをダウンロード
+  echo "Downloading $PACKAGE_NAME..."
+  curl -L "$BASE_URL/$PACKAGE" -o "$PACKAGE_PATH"
+
+  # ダウンロード成功したか確認
+  if [ $? -ne 0 ]; then
+    echo "Error downloading $PACKAGE_NAME. Exiting..."
+    exit 1
+  fi
+
+  # dpkgでインストール
+  echo "Installing $PACKAGE_NAME..."
+  dpkg -i "$PACKAGE_PATH"
+
+  # インストール成功したか確認
+  if [ $? -ne 0 ]; then
+    echo "Failed to install $PACKAGE_NAME. Exiting..."
+    exit 1
+  fi
+done
+
+# 依存関係の修正
+apt-get install -f -y
+
+# ダウンロードした .deb ファイルを削除
+rm -rf "$DOWNLOAD_DIR"
+
+# キャッシュを削除
+rm -rf /var/lib/apt/lists/*
+
+echo "All packages installed successfully."
 
 # GeckodriverのURLを構築
 GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz"
