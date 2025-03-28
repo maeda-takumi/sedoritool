@@ -1,5 +1,5 @@
 #!/bin/bash
-
+pip install -r requirements.txt
 # 必要な依存関係をインストール
 echo "必要な依存関係をインストール中..."
 
