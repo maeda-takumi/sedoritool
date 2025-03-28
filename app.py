@@ -34,7 +34,8 @@ def install_chrome():
         print("Chromeが解凍されました。")
 
         # 解凍後のファイル確認
-        if not os.path.exists(os.path.join(chrome_extract_dir, "chrome")):
+        print(f"解凍されたファイル: {os.listdir(chrome_extract_dir)}")  # 解凍されたファイルのリストを出力
+        if not any(f == "chrome" for f in os.listdir(chrome_extract_dir)):
             raise FileNotFoundError("解凍されたChrome実行ファイルが見つかりません。")
 
         # ChromeDriverの解凍先ディレクトリ
@@ -48,7 +49,8 @@ def install_chrome():
         print("ChromeDriverが解凍されました。")
 
         # 解凍後のChromeDriverファイル確認
-        if not os.path.exists(os.path.join(chromedriver_extract_dir, "chromedriver")):
+        print(f"解凍されたChromeDriverファイル: {os.listdir(chromedriver_extract_dir)}")  # 解凍されたChromeDriverのファイルを出力
+        if not any(f == "chromedriver" for f in os.listdir(chromedriver_extract_dir)):
             raise FileNotFoundError("解凍されたChromeDriver実行ファイルが見つかりません。")
 
         # 不要なzipファイルを削除
