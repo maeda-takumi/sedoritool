@@ -3,6 +3,10 @@ from flask import Flask, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
@@ -19,8 +23,7 @@ def setup_driver():
     service = Service(chromedriver_path)
 
     # WebDriverのインスタンスを作成
-    driver = webdriver.Chrome(service=service, options=options)  # ここで options を渡す
-
+    driver = webdriver.Chrome(service=service, options=options)  # 新しい方法で driver を作成
     return driver
 
 
