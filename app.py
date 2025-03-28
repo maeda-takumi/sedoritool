@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 def setup_driver():
     # Chromeの実行ファイルのパス
-    chrome_binary_path = "/tmp/chrome/chrome-linux64/chrome"
+    chrome_binary_path = "/home/render/project//chrome/chrome-linux64/chrome"
     
     # 実行ファイルが存在するか確認
     if not os.path.exists(chrome_binary_path):
@@ -27,7 +27,7 @@ def setup_driver():
     options.binary_location = chrome_binary_path
 
     # ChromeDriverのパスを指定（ログのパスを使用）
-    chromedriver_path = "/tmp/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
+    chromedriver_path = "/home/render/project/chromedriver/chromedriver-linux64/chromedriver"  # インストールされたパス
     
     # ChromeDriverが存在するか確認
     if not os.path.exists(chromedriver_path):
