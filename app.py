@@ -53,5 +53,6 @@ def install_chrome():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # ポート8080でFlaskアプリケーションを実行
-    app.run(debug=True, port=8080)
+    # Renderで自動的に指定されたポートを使用
+    port = int(os.getenv("PORT", 10000))
+    app.run(debug=True, host="0.0.0.0", port=port)
