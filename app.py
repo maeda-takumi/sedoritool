@@ -5,6 +5,7 @@ from flask import Flask, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import traceback
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
@@ -70,7 +71,15 @@ def install_chrome():
                 print("driverを取得しました")  # ここでメッセージを表示
                 return driver
             except Exception as e:
+                # WebDriver作成失敗時のエラー処理
                 print(f"Error creating WebDriver: {e}")
+                print("WebDriver作成中にエラーが発生しました:")
+                print(traceback.format_exc())  # 詳細なエラーメッセージを表示
+
+                # chromeとdriverの展開先のリストを表示
+                print(f"Chrome展開先: {chrome_extract_dir} 中身: {os.listdir(chrome_extract_dir)}")
+                print(f"ChromeDriver展開先: {chromedriver_extract_dir} 中身: {os.listdir(chromedriver_extract_dir)}")
+                
                 return None
 
         # WebDriverを作成
