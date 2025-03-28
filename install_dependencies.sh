@@ -87,4 +87,32 @@ unzip /tmp/chromedriver.zip -d "$CHROMEDRIVER_DOWNLOAD_DIR"
 echo "Granting execute permissions to ChromeDriver..."
 chmod +x "$CHROMEDRIVER_PATH"
 
-# ChromeDriverのパスを環境変数PATHに
+# ChromeDriverのパスを環境変数PATHに追加
+echo "Adding /tmp to PATH..."
+export PATH=$PATH:/tmp
+
+# インストール後のクリーンアップ
+rm /tmp/chromedriver.zip
+
+# ChromeDriverのインストールが成功したか確認
+if ! command -v chromedriver &> /dev/null; then
+  echo "ChromeDriver installation failed. Exiting..."
+  exit 1
+else
+  echo "ChromeDriver installed successfully."
+  echo "ChromeDriver installed at: $(which chromedriver)"
+fi
+
+# Chromiumのインストール先を確認
+echo "Chromium installed at: $(which chromium-browser)"
+
+# Pythonパッケージのインストール（requirements.txtに依存関係が含まれている場合）
+echo "Installing Python dependencies from requirements.txt..."
+pip install -r requirements.txt
+
+# Pythonのインストール先を確認
+echo "Python installed at: $(which python)"
+echo "Pip installed at: $(which pip)"
+
+# インストールが完了したことを確認
+echo "Installation complete!"
