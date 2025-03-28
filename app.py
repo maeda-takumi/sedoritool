@@ -74,7 +74,7 @@ def install_chrome():
         def create_webdriver():
             try:
                 # 一意なユーザーデータディレクトリを指定
-                user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
+                user_data_dir = f'/tmp/test_user_data_{uuid.uuid4()}'
                 while os.path.exists(user_data_dir):  # 既にディレクトリが存在する場合、再生成
                     user_data_dir = f'/tmp/chrome_user_data_{uuid.uuid4()}'
                 os.makedirs(user_data_dir)
@@ -118,7 +118,10 @@ def install_chrome():
                     app.logger.error(f"ChromeDriverバージョン確認エラー: {ver_error}")
                 
                 return None
-
+            finally:
+                # WebDriverを終了
+                if driver:
+        driver.quit()
         # WebDriverを作成
         driver = create_webdriver()
         if driver is None:
