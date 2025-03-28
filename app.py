@@ -58,8 +58,14 @@ def install_chrome():
         print(os.path.exists(chrome_driver_path))  # Trueならファイルが存在する
         print(os.path.exists(chrome_path))  # Trueならファイルが存在する
         
-        os.chmod(chrome_driver_path, 0o755)
-        os.chmod(chrome_path, 0o755)
+
+        try:
+            os.chmod(chrome_driver_path, 0o755)
+            os.chmod(chrome_path, 0o755)
+            print("権限変更が成功しました。")
+        except Exception as e:
+            print(f"権限変更に失敗しました: {e}")
+
         # WebDriverの作成関数
         def create_webdriver():
             try:
