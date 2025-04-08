@@ -1,6 +1,4 @@
 #!/bin/bash
-pip install -r requirements.txt
-pip show selenium
 # 必要な依存関係をインストール
 echo "必要な依存関係をインストール中..."
 
@@ -106,7 +104,9 @@ echo "Pipがインストールされている場所: $(which pip)"
 #!/bin/bash
 
 # requirements.txtからPythonパッケージをインストール
+
 pip install -r requirements.txt
+pip show selenium
 
 
 echo "インストールが完了しました！"
