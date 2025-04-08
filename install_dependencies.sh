@@ -74,26 +74,6 @@ packages=(
   libvpx6
 )
 
-# 確認したいパッケージ一覧
-packages=(
-  curl
-  ca-certificates
-  libx11-dev
-  libx264-dev
-  libfontconfig1
-  libxcomposite1
-  libxrandr2
-  libxi6
-  libnss3
-  libnss3-dev
-  libatk-bridge2.0-0
-  libatk1.0-0
-  libcups2
-  libnspr4
-  libxtst6
-  libsecret-1-0
-  libenchant-2-2
-)
 
 # インストールされていないパッケージをリストアップ
 missing_packages=()
