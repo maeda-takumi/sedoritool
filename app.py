@@ -76,26 +76,25 @@ def install_chrome():
             driver = None  # driverをNoneで初期化
             try:
                 # 一意なユーザーデータディレクトリを指定
-                # while True:
-                #     user_data_dir = f'/tmp/test_user_data_{uuid.uuid4()}'
-                #     if not os.path.exists(user_data_dir):  # 存在しない場合に作成
-                #         os.makedirs(user_data_dir)
-                #         if os.path.exists(user_data_dir):  # 作成後に確認
-                #             app.logger.info(f"ディレクトリ {user_data_dir} が作成されました。")
-                #             break  # 作成成功したらループを抜ける
-                #         else:
-                #             app.logger.error(f"ディレクトリ {user_data_dir} の作成に失敗しました。")
-                #             continue  # 作成失敗の場合は再試行
-                #     else:
-                #         app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
+                while True:
+                    user_data_dir = f'/tmp/test_user_data_{uuid.uuid4()}'
+                    if not os.path.exists(user_data_dir):  # 存在しない場合に作成
+                        os.makedirs(user_data_dir)
+                        if os.path.exists(user_data_dir):  # 作成後に確認
+                            app.logger.info(f"ディレクトリ {user_data_dir} が作成されました。")
+                            break  # 作成成功したらループを抜ける
+                        else:
+                            app.logger.error(f"ディレクトリ {user_data_dir} の作成に失敗しました。")
+                            continue  # 作成失敗の場合は再試行
+                    else:
+                        app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
                 
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless')
                 chrome_options.add_argument('--disable-gpu')  # GPUを無効化
                 chrome_options.add_argument('--no-sandbox')  # サンドボックスを無効化
-                # chrome_options.add_argument(f"--user-data-dir={user_data_dir}")  # 動的に作成したディレクトリを指定
-                # chrome_options.add_argument("--profile-directory=Profile 1")  # 削除: プロファイルディレクトリの指定は不要かも
+                chrome_options.add_argument(f"--user-data-dir={user_data_dir}")  # 動的に作成したディレクトリを指定
                 
                 # Chromeドライバサービスを設定
                 service = Service(executable_path=chrome_driver_path)
