@@ -11,6 +11,7 @@ import logging
 from selenium.webdriver.common.by import By
 import uuid
 import time  # time.sleep を使用するために追加
+import subprocess
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
@@ -88,7 +89,9 @@ def install_chrome():
                             continue  # 作成失敗の場合は再試行
                     else:
                         app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
-                
+                        
+                # Chromeプロセスを終了させる
+                subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless')
