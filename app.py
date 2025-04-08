@@ -63,13 +63,13 @@ def install_chrome():
         app.logger.info(f"Chromeの存在確認: {os.path.exists(chrome_path)}")
         app.logger.info(f"ChromeDriverの存在確認: {os.path.exists(chrome_driver_path)}")
 
-        # try:
-        #     # 権限変更処理
-        #     os.chmod(chrome_driver_path, 0o755)
-        #     os.chmod(chrome_path, 0o755)
-        #     app.logger.info("権限変更が成功しました。")
-        # except Exception as e:
-        #     app.logger.error(f"権限変更に失敗しました: {e}")
+        try:
+            # 権限変更処理
+            os.chmod(chrome_driver_path, 0o755)
+            os.chmod(chrome_path, 0o755)
+            app.logger.info("権限変更が成功しました。")
+        except Exception as e:
+            app.logger.error(f"権限変更に失敗しました: {e}")
 
         # WebDriverの作成関数
         def create_webdriver():
