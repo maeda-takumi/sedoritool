@@ -120,7 +120,7 @@ def install_chrome():
                 service = Service(executable_path=chrome_driver_path)
                 
                 # WebDriverの作成
-                # driver = webdriver.Chrome(service=service, options=chrome_options)
+                driver = webdriver.Chrome(service=service, options=chrome_options)
                 app.logger.info("WebDriverが正常に作成されました。")
                 # return driver
                 return none
