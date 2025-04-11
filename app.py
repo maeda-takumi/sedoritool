@@ -109,7 +109,7 @@ def install_chrome():
                 subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
-                chrome_options.add_argument('--headless=new')
+                chrome_options.add_argument('--headless')
                 chrome_options.add_argument('--disable-gpu')  # GPUを無効化
                 chrome_options.add_argument('--no-sandbox')  # サンドボックスを無効化
                 chrome_options.add_argument(f"--user-data-dir={user_data_dir}")  # 動的に作成したディレクトリを指定
