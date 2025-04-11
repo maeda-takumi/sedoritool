@@ -128,7 +128,13 @@ def install_chrome():
                         app.logger.info(f"{user_data_dir} は空のディレクトリです。")
                 else:
                     app.logger.error(f"{user_data_dir} が存在しません。")
-
+                try:
+                    # 権限変更処理
+                    os.chmod(user_data_dir, 0o755)
+                    app.logger.info("権限変更が成功しました。")
+                except Exception as e:
+                    app.logger.error(f"権限変更に失敗しました: {e}")
+                    
                 driver = webdriver.Chrome(service=service, options=chrome_options)
                 app.logger.info("WebDriverが正常に作成されました。")
                 # return driver
