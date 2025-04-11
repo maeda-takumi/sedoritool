@@ -11,7 +11,7 @@ import logging
 from selenium.webdriver.common.by import By
 import uuid
 import time  # time.sleep を使用するために追加
-import subprocess
+import shutil
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 最大200MB
@@ -71,6 +71,7 @@ def install_chrome():
             app.logger.info("権限変更が成功しました。")
         except Exception as e:
             app.logger.error(f"権限変更に失敗しました: {e}")
+        
         # 不要な古い user data dir を削除
         for f in os.listdir('/tmp'):
             if f.startswith("test_user_data_"):
@@ -78,6 +79,7 @@ def install_chrome():
                     shutil.rmtree(os.path.join("/tmp", f))
                 except Exception as e:
                     app.logger.warning(f"{f} の削除に失敗: {e}")
+        
         # WebDriverの作成関数
         def create_webdriver():
             driver = None  # driverをNoneで初期化
@@ -95,12 +97,14 @@ def install_chrome():
                             continue  # 作成失敗の場合は再試行
                     else:
                         app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
+                
                 if os.path.exists(user_data_dir):
                     # 念のためロックファイルを削除
                     lock_file = os.path.join(user_data_dir, 'SingletonLock')
                     if os.path.exists(lock_file):
                         os.remove(lock_file)
                         app.logger.info(f"{lock_file} を削除しました。")
+                
                 # Chromeプロセスを終了させる
                 subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
@@ -142,19 +146,24 @@ def install_chrome():
                     app.logger.error(f"ChromeDriverバージョン確認エラー: {ver_error}")
                 
                 return None
-            finally:
-                # WebDriverを終了
-                if driver:
-                    time.sleep(2)  # 少し待機してから終了処理
-                    driver.quit()
-            return jsonify({
-                "message": "ChromeとChromeDriverのインストールと展開が完了しました。",
-                "chrome_exists": os.path.exists(chrome_path),
-                "chromedriver_exists": os.path.exists(chrome_driver_path)
-            }), 200
+        
+        # WebDriver作成の試行
+        driver = create_webdriver()
+        if driver is None:
+            return jsonify({"error": "WebDriverの作成に失敗しました", "log_file": log_file}), 500
+
+        # WebDriverが作成された場合のレスポンス
+        return jsonify({
+            "chrome_contents": os.listdir(chrome_extract_dir),
+            "chromedriver_contents": os.listdir(chromedriver_extract_dir),
+            "message": "ChromeとChromeDriverのZIPファイルの中身を展開し、WebDriverを作成しました。",
+            "chromedriver_log": log_file
+        })
+
     except Exception as e:
         # エラーハンドリング
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
