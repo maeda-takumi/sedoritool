@@ -93,7 +93,7 @@ def install_chrome():
                 # Chromeプロセスを終了させる
                 subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
-                chrome_options.binary_location = chrome_driver_path  # 修正点: binary_locationはchrome_pathを指定
+                chrome_options.binary_location = chrome_options  # 修正点: binary_locationはchrome_pathを指定
                 chrome_options.add_argument('--headless=new')
                 chrome_options.add_argument('--disable-gpu')  # GPUを無効化
                 chrome_options.add_argument('--no-sandbox')  # サンドボックスを無効化
@@ -104,7 +104,7 @@ def install_chrome():
                 service = Service(executable_path=chrome_path)
                 
                 # WebDriverの作成
-                driver = webdriver.Chrome(service=service, options=chrome_options)
+                driver = webdriver.Chrome(service=service, options=chrome_driver_path)
                 app.logger.info("WebDriverが正常に作成されました。")
                 return driver
             except Exception as e:
