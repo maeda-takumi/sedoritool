@@ -147,6 +147,11 @@ def install_chrome():
                 if driver:
                     time.sleep(2)  # 少し待機してから終了処理
                     driver.quit()
+            return jsonify({
+                "message": "ChromeとChromeDriverのインストールと展開が完了しました。",
+                "chrome_exists": os.path.exists(chrome_path),
+                "chromedriver_exists": os.path.exists(chrome_driver_path)
+            }), 200
     except Exception as e:
         # エラーハンドリング
         return jsonify({"error": str(e)}), 500
