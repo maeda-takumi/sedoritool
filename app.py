@@ -71,7 +71,13 @@ def install_chrome():
             app.logger.info("権限変更が成功しました。")
         except Exception as e:
             app.logger.error(f"権限変更に失敗しました: {e}")
-
+        # 不要な古い user data dir を削除
+        for f in os.listdir('/tmp'):
+            if f.startswith("test_user_data_"):
+                try:
+                    shutil.rmtree(os.path.join("/tmp", f))
+                except Exception as e:
+                    app.logger.warning(f"{f} の削除に失敗: {e}")
         # WebDriverの作成関数
         def create_webdriver():
             driver = None  # driverをNoneで初期化
