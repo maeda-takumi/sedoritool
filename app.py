@@ -121,7 +121,8 @@ def install_chrome():
                 # WebDriverの作成
                 driver = webdriver.Chrome(service=service, options=chrome_options)
                 app.logger.info("WebDriverが正常に作成されました。")
-                return driver
+                # return driver
+                return none
             except Exception as e:
                 # WebDriver作成失敗時のエラー処理
                 error_message = traceback.format_exc()
