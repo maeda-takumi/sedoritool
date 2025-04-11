@@ -105,7 +105,7 @@ def install_chrome():
                 subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
                 chrome_options.binary_location = chrome_path  # 修正点: binary_locationはchrome_pathを指定
-                chrome_options.add_argument('--headless')  # --headless=new ではなく
+                chrome_options.add_argument('--headless=chrome')  # --headless=new ではなく
                 chrome_options.add_argument('--no-sandbox')
                 chrome_options.add_argument('--disable-gpu')
                 chrome_options.add_argument("--single-process")
