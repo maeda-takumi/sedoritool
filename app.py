@@ -95,7 +95,12 @@ def install_chrome():
                             continue  # 作成失敗の場合は再試行
                     else:
                         app.logger.info(f"ディレクトリ {user_data_dir} はすでに存在します。再生成します。")
-                        
+                if os.path.exists(user_data_dir):
+                    # 念のためロックファイルを削除
+                    lock_file = os.path.join(user_data_dir, 'SingletonLock')
+                    if os.path.exists(lock_file):
+                        os.remove(lock_file)
+                        app.logger.info(f"{lock_file} を削除しました。")
                 # Chromeプロセスを終了させる
                 subprocess.run(["pkill", "chrome"])              
                 chrome_options = Options()
