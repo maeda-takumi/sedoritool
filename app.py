@@ -153,21 +153,7 @@ def install_chrome():
                     time.sleep(2)  # 少し待機してから終了処理
                     driver.quit()
 
-
-        # WebDriverを作成
-        driver = create_webdriver()
-        if driver is None:
-            return jsonify({"error": "WebDriverの作成に失敗しました", "log_file": log_file}), 500
-
-        # WebDriverが作成された場合のレスポンス
-        return jsonify({
-            "chrome_contents": chrome_files,
-            "chromedriver_contents": chromedriver_files,
-            "message": "ChromeとChromeDriverのZIPファイルの中身を展開し、WebDriverを作成しました。",
-            "chromedriver_log": log_file
-        })
-
-    except Exception as e:
+　   except Exception as e:
         # エラーハンドリング
         return jsonify({"error": str(e)}), 500
 
