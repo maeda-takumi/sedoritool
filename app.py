@@ -120,6 +120,15 @@ def install_chrome():
                 service = Service(executable_path=chrome_driver_path)
                 
                 # WebDriverの作成
+                if os.path.exists(user_data_dir):
+                    contents = os.listdir(user_data_dir)
+                    if contents:
+                        app.logger.warning(f"{user_data_dir} は空ではありません。中身: {contents}")
+                    else:
+                        app.logger.info(f"{user_data_dir} は空のディレクトリです。")
+                else:
+                    app.logger.error(f"{user_data_dir} が存在しません。")
+
                 driver = webdriver.Chrome(service=service, options=chrome_options)
                 app.logger.info("WebDriverが正常に作成されました。")
                 # return driver
