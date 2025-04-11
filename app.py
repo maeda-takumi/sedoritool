@@ -147,8 +147,7 @@ def install_chrome():
                 if driver:
                     time.sleep(2)  # 少し待機してから終了処理
                     driver.quit()
-
-　   except Exception as e:
+    except Exception as e:
         # エラーハンドリング
         return jsonify({"error": str(e)}), 500
 
